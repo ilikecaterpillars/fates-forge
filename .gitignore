@@ -1,0 +1,59 @@
+# Operating System files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln
+*.code-workspace
+
+# Environment variables
+.env
+.env.*
+*/.env
+*/*/.env
+backend/.env
+frontend/app/.env
+
+# Node modules
+node_modules/
+backend/node_modules/
+frontend/app/node_modules/
+
+# Build output
+build/
+backend/dist/
+frontend/app/build/
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Create React App specific
+frontend/app/.pnp
+frontend/app/.pnp.js
+frontend/app/coverage/
+
+# Jest coverage
+coverage/
+backend/coverage/
+
+# Optional Svelte files
+.svelte-kit/
+
+# Optional Nuxt files
+.nuxt/
+.output/
+
+# Optional Mac files
+._*
+.Spotlight-V100
+.Trashes
