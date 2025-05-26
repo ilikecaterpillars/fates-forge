@@ -5,7 +5,9 @@ import './App.css'; // Ensure this is imported
 
 import ProjectListPage from './pages/ProjectListPage';
 import CreateProjectPage from './pages/CreateProjectPage';
-import ProjectDetailPage from './pages/ProjectDetailPage'; 
+import ProjectDetailPage from './pages/ProjectDetailPage';
+import CreatePlayerCharacterPage from './pages/CreatePlayerCharacterPage';
+import CharacterCreationWizard from './pages/CharacterCreationWizard';
 
 function App() {
   return (
@@ -13,9 +15,9 @@ function App() {
       <div className="App"> {/* This should be the main flex container */}
         
         <header className="top-bar">
-          <Link to="/">Saga Sculptor</Link> 
+          <Link to="/">Fable's Forge</Link> 
           <Link to="/projects" style={{ marginLeft: '20px' }}>Projects</Link>
-          <Link to="/create-project">Create New</Link>
+          <Link to="/create-project">Create New Project</Link>
         </header>
 
         <main className="main-content-area">
@@ -24,7 +26,7 @@ function App() {
             <Route path="/projects" element={<ProjectListPage />} />
             <Route path="/create-project" element={<CreateProjectPage />} />
             <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
-          </Routes>
+            <Route path="/projects/:projectId/create-character" element={<CharacterCreationWizard />} />          </Routes>
         </main>
 
         <footer className="bottom-input-bar">

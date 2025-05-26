@@ -53,13 +53,11 @@ app.post('/api/projects', async (req, res) => {
     const newProject = projectResult.rows[0];
 
     // 2. Create an initial world_campaigns entry
-    // You can add default values for core_concept, themes, etc., or leave them null
     const worldCampaignQuery = `
       INSERT INTO world_campaigns (project_id, core_concept, themes, generation_mode)
       VALUES ($1, $2, $3, $4)
       RETURNING world_campaign_id;
     `;
-    // Using placeholder values for now, these would ideally come from user input later or sensible defaults
     await client.query(worldCampaignQuery, [newProject.project_id, 'New Adventure Awaits!', 'Mystery, Exploration', 'Full']);
 
     // 3. Create an initial live_sessions entry
@@ -68,7 +66,6 @@ app.post('/api/projects', async (req, res) => {
       VALUES ($1, $2, $3)
       RETURNING live_session_id;
     `;
-    // Using placeholder values
     await client.query(liveSessionQuery, [newProject.project_id, 'Day 1, Morning', 'The adventure begins...']);
 
     await client.query('COMMIT'); // Commit the transaction
@@ -78,61 +75,6 @@ app.post('/api/projects', async (req, res) => {
 
   } catch (err) {
     await client.query('ROLLBACK'); // Rollback on error
-    console.error('Error creating project:', err);
-    if (err.code === '23505' && err.constraint === 'uq_project_name') {
-      return res.status(409).json({ error: 'A project with this name already exists.' });
-    }
-    res.status(500).json({ error: 'Server Error while creating project' });
-  } finally {
-    client.release();
-  }
-});
-
-// ====================================================================
-// PROJECT API Endpoints
-// ====================================================================
-
-// POST /api/projects - Create a new project
-app.post('/api/projects', async (req, res) => {
-  const { projectName, suiteVersion } = req.body;
-
-  if (!projectName) {
-    return res.status(400).json({ error: 'Project name is required.' });
-  }
-
-  const client = await pool.connect();
-  try {
-    await client.query('BEGIN'); 
-
-    const projectQuery = `
-      INSERT INTO projects (project_name, suite_version_at_creation, last_saved_date)
-      VALUES ($1, $2, NOW())
-      RETURNING project_id, project_name, created_date, last_saved_date, suite_version_at_creation;
-    `;
-    const projectResult = await client.query(projectQuery, [projectName, suiteVersion || '1.0.0']);
-    const newProject = projectResult.rows[0];
-
-    const worldCampaignQuery = `
-      INSERT INTO world_campaigns (project_id, core_concept, themes, generation_mode)
-      VALUES ($1, $2, $3, $4)
-      RETURNING world_campaign_id;
-    `;
-    await client.query(worldCampaignQuery, [newProject.project_id, 'New Adventure Awaits!', 'Mystery, Exploration', 'Full']);
-
-    const liveSessionQuery = `
-      INSERT INTO live_sessions (project_id, current_ingame_datetime, narrative_focus)
-      VALUES ($1, $2, $3)
-      RETURNING live_session_id;
-    `;
-    await client.query(liveSessionQuery, [newProject.project_id, 'Day 1, Morning', 'The adventure begins...']);
-
-    await client.query('COMMIT'); 
-    
-    console.log('Project created successfully:', newProject);
-    res.status(201).json(newProject);
-
-  } catch (err) {
-    await client.query('ROLLBACK'); 
     console.error('Error creating project:', err);
     if (err.code === '23505' && err.constraint === 'uq_project_name') {
       return res.status(409).json({ error: 'A project with this name already exists.' });
@@ -247,6 +189,210 @@ app.get('/api/projects/:projectId', async (req, res) => {
 });
 
 // ====================================================================
+// D&D LOOKUP API Endpoints
+// ====================================================================
+
+// GET /api/dnd/races - Get all D&D races
+app.get('/api/dnd/races', async (req, res) => {
+  try {
+    const query = `
+      SELECT race_id, name, description, asi_bonus, speed, size_category, parent_race_id, racial_features 
+      FROM dnd_races 
+      ORDER BY name;
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching D&D races:', err);
+    res.status(500).json({ error: 'Server Error while fetching D&D races' });
+  }
+});
+
+// GET /api/dnd/classes - Get all D&D classes
+app.get('/api/dnd/classes', async (req, res) => {
+  try {
+    const query = `
+      SELECT class_id, name, description, hit_die, primary_ability_ids, 
+             saving_throw_proficiency_ability_ids, spellcasting_ability_id, 
+             class_features_by_level, can_prepare_spells
+      FROM dnd_classes 
+      ORDER BY name;
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching D&D classes:', err);
+    res.status(500).json({ error: 'Server Error while fetching D&D classes' });
+  }
+});
+
+// GET /api/dnd/alignments - Get all D&D alignments
+app.get('/api/dnd/alignments', async (req, res) => {
+  try {
+    const query = `
+      SELECT alignment_id, name, abbreviation, description 
+      FROM dnd_alignments 
+      ORDER BY name;
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching D&D alignments:', err);
+    res.status(500).json({ error: 'Server Error while fetching D&D alignments' });
+  }
+});
+
+// GET /api/dnd/backgrounds - Get all D&D backgrounds
+app.get('/api/dnd/backgrounds', async (req, res) => {
+  try {
+    const query = `
+      SELECT background_id, name, description, starting_proficiencies, 
+             equipment_granted, feature_name, feature_description, 
+             suggested_characteristics 
+      FROM dnd_backgrounds 
+      ORDER BY name;
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching D&D backgrounds:', err);
+    res.status(500).json({ error: 'Server Error while fetching D&D backgrounds' });
+  }
+});
+
+// GET /api/dnd/abilities - Get all D&D abilities
+app.get('/api/dnd/abilities', async (req, res) => {
+  try {
+    const query = `
+      SELECT ability_id, name, abbreviation 
+      FROM dnd_abilities 
+      ORDER BY ability_id;
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching D&D abilities:', err);
+    res.status(500).json({ error: 'Server Error while fetching D&D abilities' });
+  }
+});
+
+// GET /api/dnd/skills - Get all D&D skills
+app.get('/api/dnd/skills', async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        s.skill_id, 
+        s.name, 
+        s.ability_id,
+        a.name AS ability_name,
+        a.abbreviation AS ability_abbreviation
+      FROM dnd_skills s
+      JOIN dnd_abilities a ON s.ability_id = a.ability_id
+      ORDER BY s.name;
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching D&D skills:', err);
+    res.status(500).json({ error: 'Server Error while fetching D&D skills' });
+  }
+});
+
+// GET /api/dnd/items - Get all D&D items
+app.get('/api/dnd/items', async (req, res) => {
+  try {
+    const query = `
+      SELECT item_id, name, type, description, properties, 
+             weight, cost_gp, requires_attunement 
+      FROM dnd_items 
+      ORDER BY name;
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching D&D items:', err);
+    res.status(500).json({ error: 'Server Error while fetching D&D items' });
+  }
+});
+
+// GET /api/dnd/magic-schools - Get all D&D magic schools
+app.get('/api/dnd/magic-schools', async (req, res) => {
+  try {
+    const query = `
+      SELECT magic_school_id, name, description 
+      FROM dnd_magic_schools 
+      ORDER BY name;
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching D&D magic schools:', err);
+    res.status(500).json({ error: 'Server Error while fetching D&D magic schools' });
+  }
+});
+
+// GET /api/dnd/conditions - Get all D&D conditions
+app.get('/api/dnd/conditions', async (req, res) => {
+  try {
+    const query = `
+      SELECT condition_id, name, description 
+      FROM dnd_conditions 
+      ORDER BY name;
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching D&D conditions:', err);
+    res.status(500).json({ error: 'Server Error while fetching D&D conditions' });
+  }
+});
+
+// GET /api/dnd/damage-types - Get all D&D damage types
+app.get('/api/dnd/damage-types', async (req, res) => {
+  try {
+    const query = `
+      SELECT damage_type_id, name, description 
+      FROM dnd_damage_types 
+      ORDER BY name;
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching D&D damage types:', err);
+    res.status(500).json({ error: 'Server Error while fetching D&D damage types' });
+  }
+});
+
+// GET /api/dnd/spells - Get all D&D spells
+app.get('/api/dnd/spells', async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        sp.spell_id, 
+        sp.name, 
+        sp.level, 
+        ms.name AS magic_school_name, 
+        sp.casting_time, 
+        sp.range_area, 
+        sp.components, 
+        sp.duration, 
+        sp.description, 
+        sp.at_higher_levels, 
+        sp.ritual, 
+        sp.concentration
+      FROM dnd_spells sp
+      LEFT JOIN dnd_magic_schools ms ON sp.magic_school_id = ms.magic_school_id
+      ORDER BY sp.level, sp.name;
+    `;
+    const { rows } = await pool.query(query);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching D&D spells:', err);
+    res.status(500).json({ error: 'Server Error while fetching D&D spells' });
+  }
+});
+
+// ====================================================================
 // CHARACTER API Endpoints (within a Project)
 // ====================================================================
 
@@ -262,7 +408,6 @@ app.post('/api/projects/:projectId/characters', async (req, res) => {
     alignment_id,
     strength, dexterity, constitution, intelligence, wisdom, charisma, // Ability scores
     max_hp, // Max HP (can be calculated or input)
-    // We'll add more fields like skills, spells, equipment later via separate updates or more complex logic
   } = req.body;
 
   if (isNaN(parseInt(projectId))) {
@@ -271,11 +416,9 @@ app.post('/api/projects/:projectId/characters', async (req, res) => {
   if (!character_name) {
     return res.status(400).json({ error: 'Character name is required.' });
   }
-  // Add more validation as needed (e.g., for race_id, class_id existing in lookup tables)
 
   const client = await pool.connect();
   try {
-    // Optional: Check if project exists
     const projectCheck = await client.query('SELECT 1 FROM projects WHERE project_id = $1', [projectId]);
     if (projectCheck.rows.length === 0) {
       client.release();
@@ -286,36 +429,27 @@ app.post('/api/projects/:projectId/characters', async (req, res) => {
       INSERT INTO player_characters (
         project_id, character_name, level, race_id, class_id, background_id, alignment_id,
         strength, dexterity, constitution, intelligence, wisdom, charisma,
-        max_hp, current_hp, -- Set current_hp to max_hp initially
-        -- Initialize other fields as needed, e.g., hit_dice_max, currency, spell_slots
-        hit_dice_max, -- This would be derived from class and level, e.g., level + 'd' + class.hit_die
+        max_hp, current_hp,
+        hit_dice_max, 
         currency,
         spell_slots 
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $14, 
-              COALESCE($3, 1) || 'd' || (SELECT hit_die FROM dnd_classes WHERE class_id = $5 LIMIT 1), -- Example hit_dice_max
-              '{"cp": 0, "sp": 0, "ep": 0, "gp": 0, "pp": 0}', -- Default currency
-              '{}' -- Default empty spell_slots JSON
+              COALESCE($3, 1) || 'd' || (SELECT hit_die FROM dnd_classes WHERE class_id = $5 LIMIT 1),
+              '{"cp": 0, "sp": 0, "ep": 0, "gp": 0, "pp": 0}',
+              '{}'
       ) 
       RETURNING *; 
     `;
-    // Note: Calculating hit_dice_max like this is a simplification.
-    // Real hit_dice_max string needs to consider the actual die type (e.g. '1d8', '2d10').
-    // For spell_slots, this would be more complex based on class and level.
-
+    
     const values = [
       projectId, character_name, level || 1, race_id, class_id, background_id, alignment_id,
       strength || 10, dexterity || 10, constitution || 10, intelligence || 10, wisdom || 10, charisma || 10,
-      max_hp || 10 // Default max_hp if not provided
+      max_hp || 10
     ];
     
     const characterResult = await client.query(characterQuery, values);
     const newCharacter = characterResult.rows[0];
-
-    // Here, you might also want to:
-    // - Add default proficiencies based on class_id and race_id into `character_proficiencies`
-    // - Add starting equipment based on class_id and background_id into `character_inventory`
-    // This would involve more queries within this transaction. For now, we keep it simpler.
 
     console.log(`Character '${newCharacter.character_name}' created for project ${projectId}:`, newCharacter);
     res.status(201).json(newCharacter);
@@ -325,10 +459,9 @@ app.post('/api/projects/:projectId/characters', async (req, res) => {
     if (err.code === '23505' && err.constraint === 'uq_character_name_in_project') {
       return res.status(409).json({ error: 'A character with this name already exists in this project.' });
     }
-    if (err.code === '23503') { // Foreign key violation
+    if (err.code === '23503') { 
         if (err.constraint && err.constraint.includes('fk_character_race')) return res.status(400).json({ error: 'Invalid Race ID.' });
         if (err.constraint && err.constraint.includes('fk_character_class')) return res.status(400).json({ error: 'Invalid Class ID.' });
-        // Add checks for other FKs like background, alignment
     }
     res.status(500).json({ error: 'Server Error while creating character' });
   } finally {

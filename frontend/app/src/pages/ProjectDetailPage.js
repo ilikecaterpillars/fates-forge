@@ -81,7 +81,9 @@ function ProjectDetailPage() {
       <div style={{marginTop: '20px', border: '1px solid #4a4f58', padding: '10px', borderRadius: '4px'}}>
         <h4>Operate on this Project:</h4>
         <button>World & Campaign Design</button>
-        <button>Character Creation/Management</button>
+        <Link to={`/projects/${project.project_id}/create-character`}>
+          <button>Create New Character</button>
+        </Link>
         <button>Run Adventure Session</button>
       </div>
     </div>
