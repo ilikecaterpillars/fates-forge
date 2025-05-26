@@ -8,18 +8,19 @@ import CampaignListPage from './pages/CampaignListPage';
 import CreateCampaignPage from './pages/CreateCampaignPage';
 import CampaignDetailPage from './pages/CampaignDetailPage';
 import CharacterCreationWizard from './pages/CharacterCreationWizard';
+import PlayerCharacterListPage from './pages/PlayerCharacterListPage/PlayerCharacterListPage';
+
+const noBarsPaths = ['/', '/player-characters']; 
 
 function AppLayout() {
   const location = useLocation();
-  const [showBars, setShowBars] = useState(false);
+  const [showBars, setShowBars] = useState(true);
 
   useEffect(() => {
-    // Only show bars if NOT on the root/home page.
-    // HomePage itself will never trigger the global bars.
-    if (location.pathname !== '/') {
-      setShowBars(true);
-    } else {
+    if (noBarsPaths.includes(location.pathname)) {
       setShowBars(false);
+    } else {
+      setShowBars(true);
     }
   }, [location.pathname]);
 
@@ -29,18 +30,19 @@ function AppLayout() {
         <header className="top-bar">
           <Link to="/">Fate's Forge</Link>
           <Link to="/campaigns" style={{ marginLeft: '20px' }}>Campaigns</Link>
-          <Link to="/create-campaign">Create New Campaign</Link>
+          <Link to="/player-characters" style={{ marginLeft: '20px' }}>Characters</Link>
         </header>
       )}
 
       <main className="main-content-area">
         <Routes>
-          {/* HomePage no longer needs onStartApp as App.js controls bars by route */}
           <Route path="/" element={<HomePage />} />
           <Route path="/campaigns" element={<CampaignListPage />} />
           <Route path="/create-campaign" element={<CreateCampaignPage />} />
           <Route path="/campaigns/:campaignId" element={<CampaignDetailPage />} />
           <Route path="/campaigns/:campaignId/create-character" element={<CharacterCreationWizard />} />
+          <Route path="/player-characters" element={<PlayerCharacterListPage />} />
+          {/* Add route for /create-player-character-template when ready */}
         </Routes>
       </main>
 

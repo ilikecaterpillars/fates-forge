@@ -37,34 +37,47 @@ To provide a comprehensive, integrated tool for:
 * **Backend (`backend/server.js`):**
     * Endpoints for `worlds`, `campaigns`, character creation within campaigns, NPC templates, campaign NPC instances, and D&D data lookups.
 * **Frontend (`frontend/app`):**
-    * Application shell with conditional top bar/footer.
+    * Application shell with conditional top bar/footer based on route.
     * `HomePage.js` with initial "Tap to Start" view and main menu.
     * `CampaignListPage.js`, `CreateCampaignPage.js`, `CampaignDetailPage.js`.
-    * Multi-Step Character Creation Wizard (`CharacterCreationWizard.js`) for basic info, race, class, ability scores, background, and alignment.
-    * Universal `Button` component with consistent styling.
-    * Implemented a `theme.css` using CSS Custom Properties (two-tiered: foundational palette and semantic variables) to manage the application's universal color scheme and other themeable aspects.
+    * **NEW:** `PlayerCharacterListPage.js` for displaying "worldless" character templates:
+        * Styled to resemble D&D Beyond's character list.
+        * Features initial-letter avatars and a three-line info display (Name, Level/Race, Class/Subclass).
+        * Includes a "Back to Main Menu" button and a "Create New Character" button.
+        * Fixed header (title, back button) and fixed footer (create button) with a scrollable character list.
+        * Scrollbar on the character list is hidden via CSS.
+    * Multi-Step Character Creation Wizard (`CharacterCreationWizard.js`) for creating characters *within a campaign*.
+    * Universal `Button` component with consistent styling (now more rectangular with 10px radius corners).
+    * Implemented a `theme.css` using CSS Custom Properties (two-tiered: foundational palette and semantic variables) to manage the application's universal color scheme and other themeable aspects like border-radius.
+    * CSS Modules used for component-specific styling.
 
 ## Current Focus & Ongoing Work
 
-The primary focus is on refining the user interface and ensuring consistent styling across the application using the newly established theming system.
+The primary focus has been on establishing a consistent UI and theming system, and initial implementation of key list and creation pages. Recent work completed:
 
-1.  **Theming Integration (In Progress):**
-    * The `theme.css` file, utilizing a two-tiered CSS Custom Property system (foundational palette and semantic variables), has been finalized.
-    * **Currently refactoring all relevant CSS files** (`Button.module.css`, `App.css`, `HomePage.module.css`, and subsequently all other component and page-specific CSS) to use the variables defined in `theme.css`. This will ensure a consistent look and feel and allow for easy global theme adjustments.
-2.  **Page-by-Page UI Styling and Refinement:**
-    * Once the initial CSS refactoring for theming is complete for core files, the next step is to **systematically go through each existing page and component.**
-    * This involves ensuring all UI elements (buttons, inputs, lists, text, layout containers, etc.) are styled consistently using the universal `Button` component (where applicable for button-like actions) and the theme variables from `theme.css`.
-    * The process includes refining layouts on each page for better clarity, user experience, and responsiveness.
-3.  **Character Creation Wizard - Completion:**
-    * After the broader UI styling and theming pass, the focus will return to the `CharacterCreationWizard.js`.
-    * **Enhancements to be completed:** Implementing the remaining sections for detailed character creation, including Skill selection, Proficiency choices (automatic and choice-based, derived from race, class, background), Equipment selection/management, and Spells known/prepared.
+1.  **Theming Integration:**
+    * The `theme.css` file, utilizing a two-tiered CSS Custom Property system, has been established and refined (e.g., button radius updated to `10px`).
+    * Core components like `Button.module.css` and global styles in `App.css` have been updated to use these theme variables.
+2.  **Player Character List Page (`PlayerCharacterListPage.js`):**
+    * **UI Finalized:** The layout for displaying worldless character templates is complete, including fixed headers/footers, a scrollable list with hidden scrollbars, initial-letter avatars, and D&D Beyond-inspired styling.
+    * Button widths and page content widths have been standardized to align with the `HomePage` menu.
+    * Navigation (back to menu, create new template) is in place (though create template leads to a placeholder route).
+3.  **HomePage Navigation:**
+    * "Characters" button now correctly links to the `PlayerCharacterListPage`.
+    * Navigation to the main menu view of `HomePage` from other pages (like `PlayerCharacterListPage`) now correctly bypasses the initial welcome screen.
 
 ## Future Steps (Post-Current Focus)
 
+* **Character Template Backend & Wizard:**
+    * Define database schema and create backend API endpoints for "worldless character templates".
+    * Implement fetching real data in `PlayerCharacterListPage.js`.
+    * Develop/Adapt a Character Creation Wizard for these templates (linking from the "Create New Character" button).
 * **UI for World Management:** Develop `WorldListPage.js`, `CreateWorldPage.js`, `WorldDetailPage.js`.
-* **Further Backend API Expansion:** Add `PUT`/`DELETE` endpoints for all major entities, implement more granular endpoints for world sub-resources.
+* **Character Creation Wizard - Campaign Characters:**
+    * Complete enhancements for the existing `CharacterCreationWizard.js` for campaign characters: Skill selection, Proficiency choices, Equipment, Spells.
+* **Further Backend API Expansion:** Add `PUT`/`DELETE` endpoints for all major entities.
 * **AI Integration Planning:** Begin prototyping interactions with Google Gemini API.
-* **Comprehensive Mobile Responsiveness and UI Polish:** Ensure a seamless and polished experience across all devices and screen sizes.
+* **Comprehensive Mobile Responsiveness and UI Polish:** Continue to ensure a seamless experience.
 
 ## Getting Started (Development)
 

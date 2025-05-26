@@ -1,0 +1,189 @@
+/* frontend/app/src/pages/PlayerCharacterListPage/PlayerCharacterListPage.module.css */
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  max-width: 700px;
+  margin: 0 auto;
+  background-color: var(--color-background-app);
+  padding-left: 15px;
+  padding-right: 15px;
+  box-sizing: border-box; 
+}
+
+.pageHeaderFixed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px; 
+  padding-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--color-background-app);
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.title {
+  text-align: center;
+  font-size: clamp(1.5em, 5vw, 1.8em);
+  color: var(--color-text-heading);
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+}
+
+.backButtonContainer {
+  width: 100%;
+  max-width: 350px; 
+  margin: 5px auto 0 auto;
+  display: flex;
+  justify-content: flex-start; 
+}
+
+.backButton {
+  padding: 8px 18px !important; 
+  font-size: 0.9em !important;
+  text-transform: none !important;
+  max-width: fit-content; 
+}
+
+.errorContainer {
+  padding-top: 0;
+  padding-bottom: 10px;
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto 10px auto;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.pageError {
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
+
+.characterList {
+  flex-grow: 1;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 10px;
+  padding-bottom: 100px;
+  box-sizing: border-box;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.characterList::-webkit-scrollbar {
+  display: none;
+}
+.characterCardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.characterCard {
+  background-color: var(--color-background-surface);
+  border-radius: var(--radius-standard); 
+  border: 1px solid var(--color-border);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.characterCardLink:hover .characterCard {
+  background-color: var(--color-background-input-alt);
+  border-color: var(--color-border-input);
+}
+
+.avatarPlaceholder {
+  width: 50px;
+  height: 50px;
+  background-color: var(--color-primary-bg); 
+  border-radius: 50%;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6em;
+  font-weight: bold;
+  color: var(--color-text-on-primary);
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.characterInfo {
+  flex-grow: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.characterName {
+  font-size: clamp(1.1em, 4vw, 1.3em);
+  color: var(--color-text-heading);
+  margin: 0 0 2px 0;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.characterDetailLine {
+  font-size: clamp(0.8em, 2.8vw, 0.9em);
+  color: var(--color-text-default);
+  margin: 1px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.arrow {
+  font-size: 1.5em;
+  color: var(--color-text-placeholder);
+  margin-left: 10px;
+}
+
+.createButtonContainerFixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--color-background-app);
+  padding-top: 15px;
+  padding-bottom: 20px; 
+  padding-left: 35px;
+  padding-right: 35px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.createButtonInnerContainer {
+  width: 100%;
+  max-width: 350px; 
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.createButton {
+  width: 100%;
+}
+
+/* --- Debug borders (temporary) --- */
+/* Add to HomePage.module.css */
+/* .mainMenuScreen { border: 2px solid red !important; } */
+/* .mainMenuNav { border: 2px solid blue !important; } */
+
+/* Add to PlayerCharacterListPage.module.css */
+/* .characterList { border: 2px solid lime !important; }
+.createButtonContainerFixed { border: 2px solid hotpink !important; }
+.createButtonInnerContainer { border: 2px solid yellow !important; } */
