@@ -1,45 +1,44 @@
 /* frontend/app/src/components/common/Button/Button.module.css */
 .button {
-  background-color: #3498db;    /* Blue from your 'Enter the Forge' button */
-  color: #ffffff;                /* White text */
-  border: none;                  /* No border, as per the screenshot */
-  padding: clamp(14px, 3.8vh, 18px) clamp(30px, 7.5vw, 40px); /* Generous padding */
-  font-size: clamp(1.2em, 4.2vw, 1.5em); /* Consistent font size */
+  box-sizing: border-box;
+  background-color: var(--color-primary-bg);
+  color: var(--color-text-on-primary) !important;
+  border: none;
+  padding: clamp(14px, 3.8vh, 18px) clamp(30px, 7.5vw, 40px);
+  font-size: clamp(1.2em, 4.2vw, 1.5em);
   font-weight: 600;
-  border-radius: 50px;           /* Pill shape */
+  border-radius: var(--radius-button);
   cursor: pointer;
-  text-decoration: none; 
-  display: inline-block;         /* Default display */
+  text-decoration: none;
+  display: inline-block;
   text-align: center;
   transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  line-height: 1.4; 
+  box-shadow: var(--shadow-interactive);
+  line-height: 1.4;
   white-space: nowrap;
-  text-transform: uppercase;     /* Uppercase text for all buttons */
-  letter-spacing: 0.8px;       /* Letter spacing for uppercase style */
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
-.button:hover:not([disabled]) { /* Combined :not(:disabled) directly */
-  background-color: #2980b9;    /* Darker blue on hover */
+.button:hover:not([disabled]) {
+  background-color: var(--color-primary-bg-hover);
   transform: translateY(-1px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-interactive-hover);
 }
 
 .button:active:not([disabled]) {
   transform: translateY(0px);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-interactive-active);
 }
 
-/* Modifier for buttons that need to take full width of their container */
-/* This is applied via the className prop in HomePage.js */
 .fullWidth {
   display: block;
   width: 100%;
 }
 
 .disabled {
-  background-color: #7f8c8d !important; 
-  color: #bdc3c7 !important;          
+  background-color: var(--color-button-disabled-bg) !important;
+  color: var(--color-text-disabled) !important;
   cursor: not-allowed !important;
   box-shadow: none !important;
   transform: none !important;

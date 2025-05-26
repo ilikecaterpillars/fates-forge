@@ -26,14 +26,14 @@
 }
 .initialScreen .homeHeader h1 {
   font-size: clamp(2em, 7vw, 2.5em); 
-  color: #ecf0f1;
+  color: var(--color-text-heading);
   margin: 0 0 5px 0; 
   font-weight: 600;
   line-height: 1.2;
 }
 .initialScreen .homeIntro {
   font-size: clamp(0.9em, 3.5vw, 1.1em); 
-  color: #bdc3c7;
+  color: var(--color-text-default);
   line-height: 1.4;
   margin: 0 0 25px 0; 
   max-width: 90%;
@@ -45,7 +45,6 @@
   flex-shrink: 0;
 }
 
-/* Styles for the "Main Menu" screen (after "Tap to Start") */
 .mainMenuScreen {
   height: 100svh; 
   justify-content: center; 
@@ -62,10 +61,11 @@
   flex-shrink: 0;
 }
 .mainMenuScreen .homeHeader h1 {
-  font-size: clamp(1.8em, 6vw, 2.2em); 
+  font-size: clamp(2.2em, 8vw, 3em); 
   line-height: 1.15;
-  margin-bottom: 0; /* No intro text here, so no margin needed below h1 */
-  color: #ecf0f1;
+  margin-bottom: 0;
+  color: var(--color-text-heading);
+  font-weight: 600;
 }
 
 .mainMenuNav {
@@ -74,24 +74,22 @@
   align-items: center;
   gap: 15px; 
   width: 100%;
-  max-width: 350px; /* Controls how wide the column of buttons can get */
+  max-width: 350px;
   flex-shrink: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* This class is ONLY for LAYOUT of menu buttons */
 .menuButtonLayout {
-  width: 100%; /* Makes the universal Button take full width of its .mainMenuNav container */
-  /* Add any specific margins for these buttons if 'gap' in .mainMenuNav is not enough */
+  width: 100%;
 }
 
 @media (min-width: 600px) {
   .initialScreen .homeHeader h1 { font-size: 2.8em; }
   .initialScreen .homeIntro { font-size: 1.2em; }
-  /* "Enter the Forge" button sizing is now controlled by its base styles or padding in Button.module.css */
 
-  .mainMenuScreen .homeHeader h1 { font-size: 2.5em; }
+  .mainMenuScreen .homeHeader h1 { font-size: 3em; }
   .mainMenuNav {
     gap: 20px;
   }
-  /* .menuButtonLayout can remain width: 100% or you can make it width:auto for wider screens if desired */
 }

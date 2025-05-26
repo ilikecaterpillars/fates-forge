@@ -1,89 +1,78 @@
 /* frontend/app/src/App.css */
-
-/* Basic Reset & Body Styles */
-html, body, #root { /* Ensure all take full height */
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #282c34;
-  color: #f4f7f6; 
-}
-
-/* This is the main container for the whole app flex layout */
+/* App container itself uses variables defined in theme.css (via body style) */
 .App {
   display: flex;
   flex-direction: column;
   min-height: 100svh;
+  background-color: var(--color-background-app);
 }
 
 /* Top Bar Styling */
 .top-bar {
-  background-color: #282c34;
-  color: white;
+  background-color: var(--color-background-header);
+  color: var(--color-text-on-primary);
   padding: 10px 20px;
-  flex-shrink: 0; 
-  border-bottom: 1px solid #4a4f58;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .top-bar a {
-  color: #ecf0f1; 
+  color: var(--color-text-default); 
   margin-right: 20px;
   text-decoration: none;
   font-weight: 500;
 }
 
 .top-bar a:hover {
-  color: #3498db; 
+  color: var(--color-text-link-hover);
 }
 
 /* Main Content Area Styling */
 .main-content-area {
-  flex-grow: 1; 
+  flex-grow: 1;
   padding: 20px;
-  overflow-y: auto; 
-  background-color: #282c34; 
-  color: #ecf0f1; 
+  overflow-y: auto;
+  background-color: var(--color-background-content);
+  color: var(--color-text-default);
 }
 
-/* Headings in Main Content */
 .main-content-area h1,
 .main-content-area h2,
 .main-content-area h3,
 .main-content-area h4,
 .main-content-area h5,
 .main-content-area h6 {
-  color: #ecf0f1; 
+  color: var(--color-text-heading);
 }
 
-/* Links in Main Content */
-.main-content-area a {
-  color: #5dade2; 
+/* General links within main content, not buttons */
+.main-content-area a:not([class*="button_button"]) { 
+  color: var(--color-text-link);
 }
-.main-content-area a:hover {
-  color: #85c1e9; 
+.main-content-area a:not([class*="button_button"]):hover {
+  color: var(--color-text-link-hover);
 }
 
-/* Lists in Main Content */
 .main-content-area ul {
   list-style: none;
   padding-left: 0;
 }
 
 .main-content-area ul li {
-  background-color: #3b4049; 
-  border: 1px solid #4a4f58;  
-  color: #ecf0f1; 
+  background-color: var(--color-background-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-default);
   padding: 10px 15px;
   margin-bottom: 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-standard);
 }
 
 /* Forms in Main Content */
@@ -95,77 +84,62 @@ body {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: #ecf0f1; 
+  color: var(--color-text-default);
 }
 
 .main-content-area form input[type="text"] {
   padding: 8px;
-  border: 1px solid #555;
-  border-radius: 4px;
-  width: calc(100% - 18px); 
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-standard);
+  width: calc(100% - 18px);
   max-width: 400px;
-  background-color: #4a4f58; 
-  color: #ecf0f1; 
+  background-color: var(--color-background-input);
+  color: var(--color-text-default);
 }
 
-/* Buttons (Global or within .main-content-area) */
-button {
-  background-color: #3498db; 
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1em;
-  margin-right: 10px;
-}
-
-button:hover {
-  background-color: #2980b9;
-}
-
-button:disabled {
-  background-color: #566573;
-  color: #aab7c4;
-  cursor: not-allowed;
-}
-
+/* cancel-button style remains for native buttons until they are refactored */
+/* This will be addressed later as per your previous instruction */
 button.cancel-button {
-  background-color: #7f8c8d;
+  background-color: var(--color-button-disabled-bg);
+  /* color: var(--color-text-on-primary); */
 }
 button.cancel-button:hover {
-  background-color: #95a5a6;
+  background-color: #95a5a6; /* TODO: Convert to a variable e.g. var(--palette-grey-medium-hover) if defined */
 }
 
 /* Error Messages */
 .error-message {
-  color: #e74c3c; 
+  color: var(--color-error);
   font-weight: bold;
-  background-color: rgba(231, 76, 60, 0.1);
+  background-color: var(--color-error-bg);
   padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #e74c3c;
+  border-radius: var(--radius-standard);
+  border: 1px solid var(--color-error);
 }
 
 /* Bottom Input Bar Styling */
 .bottom-input-bar {
-  background-color: #1e2226; 
-  color: white;
-  padding: 10px 20px; 
-  flex-shrink: 0; 
-  border-top: 1px solid #4a4f58; 
+  background-color: var(--color-background-footer);
+  color: var(--color-text-on-primary);
+  padding: 10px 20px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-border);
 }
 
 .bottom-input-bar textarea {
   width: 100%;
   padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #555;
-  background-color: #2c3e50; 
-  color: #ecf0f1; 
+  border-radius: var(--radius-standard);
+  border: 1px solid var(--color-border-input);
+  background-color: var(--color-background-input-alt);
+  color: var(--color-text-default);
   box-sizing: border-box;
-  min-height: 40px; 
+  min-height: 40px;
   resize: vertical;
-  font-family: inherit; 
+  font-family: var(--font-family-main);
   font-size: 1em;
+}
+
+.bottom-input-bar textarea::placeholder {
+  color: var(--color-text-placeholder);
 }

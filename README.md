@@ -12,21 +12,20 @@ To provide a comprehensive, integrated tool for:
 * **Character Creation & Management:** Assisting in building D&D 5e characters (both as reusable templates/blueprints and as specific participants in a campaign) and managing their progression.
 * **Adventure Direction:** Running live game sessions based on the created world, campaign, and characters, with AI assistance.
 
-## Current Architecture
+## Architecture
 
 * **Frontend (`frontend/app`):** React application built with Create React App.
     * Handles user interface and interaction.
     * Communicates with the backend via `axios`.
     * Uses `react-router-dom` for navigation.
     * Features a multi-step wizard for character creation.
-    * Includes a `HomePage` with a "Tap to Start" mechanic leading to a main menu.
-    * Uses CSS Modules for styling, including a universal `Button` component.
+    * Includes a `HomePage` with a main menu.
+    * Uses CSS Modules for styling, including a universal `Button` component and a `theme.css` file for managing CSS Custom Properties (variables) for a universal color scheme.
 * **Backend (`backend`):** Node.js with Express.js.
     * Provides RESTful API endpoints.
     * Manages database interactions with PostgreSQL.
-    * Planned integration with Google Gemini API.
 * **Database (`00_database_setup`):** PostgreSQL.
-    * Schema includes tables for: `worlds`, `world_regions`, `world_cultures`, `world_factions`, `world_locations`, `campaigns`, `player_characters` (to be `campaign_characters`), `npcs`, `campaign_npc_instances`, `campaign_item_instances`, `live_sessions`, and `dnd_*` lookup tables.
+    * Schema includes tables for worlds, campaigns, characters, NPCs, items, game sessions, and D&D lookup data.
 
 ## Current Features Implemented (High-Level)
 
@@ -35,45 +34,37 @@ To provide a comprehensive, integrated tool for:
     * Tables for `world_regions`, `world_cultures` (with `naming_conventions`), `world_factions`, `world_locations` are defined.
     * Tables for `npcs` (templates), `campaign_npc_instances`, and `campaign_item_instances` are defined.
     * `player_characters` and `live_sessions` link to `campaign_id`.
-    * Initial data populates these structures.
 * **Backend (`backend/server.js`):**
-    * **Refactored Campaign Endpoints:**
-        * `POST /api/campaigns` (creates a new campaign linked to a world, initializes live session)
-        * `GET /api/campaigns` (lists all campaigns with linked world info)
-        * `GET /api/campaigns/:campaignId` (gets detailed campaign data including world, characters, NPC/item instances, live session)
-    * **Refactored Character Creation Endpoint:**
-        * `POST /api/campaigns/:campaignId/characters` (creates a character within a campaign)
-    * **New World Management Endpoints:**
-        * `POST /api/worlds`
-        * `GET /api/worlds`
-        * `GET /api/worlds/:worldId` (includes regions)
-    * **New NPC Template Endpoints:**
-        * `POST /api/npcs` (generic or world-specific)
-        * `GET /api/npcs` (filterable by `world_id`)
-        * `GET /api/npcs/:npcId`
-    * **New Campaign NPC Instance Endpoint:**
-        * `POST /api/campaigns/:campaignId/npc-instances`
-    * **D&D Lookup APIs Implemented:**
-        * `GET /api/dnd/abilities`, `alignments`, `backgrounds`, `classes`, `conditions`, `damage-types`, `items`, `magic-schools`, `races`, `skills`, `spells`.
+    * Endpoints for `worlds`, `campaigns`, character creation within campaigns, NPC templates, campaign NPC instances, and D&D data lookups.
 * **Frontend (`frontend/app`):**
-    * Application shell with conditional top bar/footer (hidden on initial `HomePage` view).
-    * `HomePage.js`:
-        * Initial "Tap to Start" view.
-        * Main menu view with navigation buttons (Campaigns, New Campaign).
-        * Uses a universal `Button` component.
-        * Basic mobile responsiveness for the initial screen and main menu.
-    * `CampaignListPage.js`: Fetches and displays campaigns from `/api/campaigns`.
-    * `CreateCampaignPage.js`: Allows creation of new campaigns, posts to `/api/campaigns`, includes world selection.
-    * `CampaignDetailPage.js`: Fetches and displays detailed campaign data from `/api/campaigns/:campaignId`.
-    * **Multi-Step Character Creation Wizard (`CharacterCreationWizard.js`):**
-        * Uses `campaignId` from URL.
-        * POSTs to `/api/campaigns/:campaignId/characters`.
-        * Step 0: Name & Level.
-        * Step 1: Race Selection.
-        * Step 2: Class Selection (stores `hit_die`).
-        * Step 3: Ability Scores (Max HP input moved here, with basic auto-suggestion for Lvl 1).
-        * Step 4: Background & Alignment Selection.
-    * Basic CSS Module structure initiated with `HomePage` and `Button` components.
+    * Application shell with conditional top bar/footer.
+    * `HomePage.js` with initial "Tap to Start" view and main menu.
+    * `CampaignListPage.js`, `CreateCampaignPage.js`, `CampaignDetailPage.js`.
+    * Multi-Step Character Creation Wizard (`CharacterCreationWizard.js`) for basic info, race, class, ability scores, background, and alignment.
+    * Universal `Button` component with consistent styling.
+    * Implemented a `theme.css` using CSS Custom Properties (two-tiered: foundational palette and semantic variables) to manage the application's universal color scheme and other themeable aspects.
+
+## Current Focus & Ongoing Work
+
+The primary focus is on refining the user interface and ensuring consistent styling across the application using the newly established theming system.
+
+1.  **Theming Integration (In Progress):**
+    * The `theme.css` file, utilizing a two-tiered CSS Custom Property system (foundational palette and semantic variables), has been finalized.
+    * **Currently refactoring all relevant CSS files** (`Button.module.css`, `App.css`, `HomePage.module.css`, and subsequently all other component and page-specific CSS) to use the variables defined in `theme.css`. This will ensure a consistent look and feel and allow for easy global theme adjustments.
+2.  **Page-by-Page UI Styling and Refinement:**
+    * Once the initial CSS refactoring for theming is complete for core files, the next step is to **systematically go through each existing page and component.**
+    * This involves ensuring all UI elements (buttons, inputs, lists, text, layout containers, etc.) are styled consistently using the universal `Button` component (where applicable for button-like actions) and the theme variables from `theme.css`.
+    * The process includes refining layouts on each page for better clarity, user experience, and responsiveness.
+3.  **Character Creation Wizard - Completion:**
+    * After the broader UI styling and theming pass, the focus will return to the `CharacterCreationWizard.js`.
+    * **Enhancements to be completed:** Implementing the remaining sections for detailed character creation, including Skill selection, Proficiency choices (automatic and choice-based, derived from race, class, background), Equipment selection/management, and Spells known/prepared.
+
+## Future Steps (Post-Current Focus)
+
+* **UI for World Management:** Develop `WorldListPage.js`, `CreateWorldPage.js`, `WorldDetailPage.js`.
+* **Further Backend API Expansion:** Add `PUT`/`DELETE` endpoints for all major entities, implement more granular endpoints for world sub-resources.
+* **AI Integration Planning:** Begin prototyping interactions with Google Gemini API.
+* **Comprehensive Mobile Responsiveness and UI Polish:** Ensure a seamless and polished experience across all devices and screen sizes.
 
 ## Getting Started (Development)
 
@@ -83,47 +74,31 @@ To provide a comprehensive, integrated tool for:
 * PostgreSQL server
 * Git
 
-**1. Clone the Repository (if applicable once it's on GitHub):**
-   ```bash
-   git clone [https://github.com/ilikecaterpillars/fates-forge](https://github.com/ilikecaterpillars/fates-forge) 
-   ```
+**1. Clone the Repository:**
+   \`\`\`bash
+   git clone [repository-url] 
+   \`\`\`
 **2. Setup Database:**
-* Create a PostgreSQL database (e.g., `fates_forge_db`).
-* Configure your database connection details in `backend/.env`.
-* Run the schema script: `00_database_setup/001_schema.sql`.
-* Run the initial data script: `00_database_setup/002_initial_data.sql`.
+* Create a PostgreSQL database (e.g., \`fates_forge_db\`).
+* Configure your database connection details in \`backend/.env\`.
+* Run the schema script: \`00_database_setup/001_schema.sql\`.
+* Run the initial data script: \`00_database_setup/002_initial_data.sql\`.
 
 **3. Backend Setup:**
-   ```bash
+   \`\`\`bash
    cd backend
    npm install
-   # Create/update .env file with DB credentials, GEMINI_API_KEY, and BACKEND_PORT (e.g., 1001)
+   # Create/update .env file with DB credentials, GEMINI_API_KEY, and BACKEND_PORT
    npm start
-   ```
-   The backend should be running on `http://localhost:1001` (or your configured port).
+   \`\`\`
+   The backend should be running on \`http://localhost:1001\` (or your configured port).
 
 **4. Frontend Setup:**
-   ```bash
+   \`\`\`bash
    cd frontend/app
    npm install
-   # Create/update .env file with PORT (e.g., 1000) and REACT_APP_API_BASE_URL=http://localhost:1001/api
+   # Create/update .env file with PORT and REACT_APP_API_BASE_URL=http://localhost:1001/api
+   # Ensure src/index.js imports src/theme.css (and src/index.css if it has other global styles)
    npm start
-   ```
-   The frontend should open on `http://localhost:1000` (or your configured port).
-
-## Next Steps (Focus Areas)
-
-* **Frontend - Character Creation Wizard Enhancements:**
-    * Implement Skill & Proficiency selection (automatic based on race/class/background, and choice-based).
-    * Add sections for Equipment and Spells.
-* **Frontend - UI for World Management:**
-    * `WorldListPage.js`, `CreateWorldPage.js`, `WorldDetailPage.js`.
-* **Frontend - UI Polish:**
-    * Improve `CampaignDetailPage.js` to display its rich data more effectively (beyond raw JSON).
-    * Continue refining mobile responsiveness across all views, aiming for a no-scroll experience where intended.
-    * Implement page transitions for smoother navigation.
-* **Backend - Further API Expansion:**
-    * `PUT` / `DELETE` endpoints for Campaigns, Worlds, Characters, NPCs, etc.
-    * More granular endpoints for world sub-resources (cultures, factions, locations within regions).
-    * Endpoints for `campaign_item_instances`.
-* **AI Integration Planning:** Begin prototyping interactions with Google Gemini API for world generation, NPC dialogue, adventure hooks, etc.
+   \`\`\`
+   The frontend should open on \`http://localhost:1000\` (or your configured port).

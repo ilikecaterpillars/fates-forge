@@ -1,0 +1,92 @@
+/* frontend/app/src/theme.css */
+
+:root {
+  /* --- Foundational Color Palette --- */
+  /* Blues */
+  --palette-blue-primary: #3498db;
+  --palette-blue-primary-hover: #2980b9;
+  --palette-blue-accent: #5dade2;
+  --palette-blue-accent-hover: #85c1e9;
+
+  /* Neutrals - Greys & Whites */
+  --palette-white: #ffffff;
+  --palette-off-white: #ecf0f1;
+  --palette-grey-light: #bdc3c7;
+  --palette-grey-medium: #7f8c8d;
+  --palette-grey-dark: #555;
+  --palette-grey-darker: #4a4f58;
+  
+  /* Charcoals/Very Darks */
+  --palette-charcoal-light: #3b4049;
+  --palette-charcoal-medium: #2c3e50;
+  --palette-charcoal-dark: #282c34;
+  --palette-charcoal-deep: #1e2226;
+
+  /* Semantic States */
+  --palette-red-error: #e74c3c;
+  --palette-red-error-bg: rgba(231, 76, 60, 0.1);
+
+  /* --- Semantic Theme Variables (using the palette above) --- */
+
+  /* Core Interactive Elements */
+  --color-primary-bg: var(--palette-blue-primary);
+  --color-primary-bg-hover: var(--palette-blue-primary-hover);
+  --color-accent-bg: var(--palette-blue-accent);
+  --color-accent-bg-hover: var(--palette-blue-accent-hover);
+  
+  --color-button-disabled-bg: var(--palette-grey-medium);
+
+  /* Backgrounds */
+  --color-background-app: var(--palette-charcoal-dark);
+  --color-background-content: var(--palette-charcoal-dark);
+  --color-background-header: var(--palette-charcoal-dark);
+  --color-background-footer: var(--palette-charcoal-deep);
+  --color-background-surface: var(--palette-charcoal-light);
+  --color-background-input: var(--palette-grey-darker);
+  --color-background-input-alt: var(--palette-charcoal-medium);
+  
+  /* Text */
+  --color-text-on-primary: var(--palette-white);
+  --color-text-default: var(--palette-off-white);
+  --color-text-heading: var(--palette-off-white);
+  --color-text-link: var(--palette-blue-accent);
+  --color-text-link-hover: var(--palette-blue-accent-hover);
+  --color-text-disabled: var(--palette-grey-light);
+  --color-text-placeholder: var(--palette-grey-light);
+  --color-text-inverted: var(--palette-charcoal-medium);
+
+  /* Borders */
+  --color-border: var(--palette-grey-darker);
+  --color-border-input: var(--palette-grey-dark);
+
+  /* UI States & Semantic Feedback */
+  --color-error: var(--palette-red-error);
+  --color-error-bg: var(--palette-red-error-bg);
+
+  /* --- Other Theme Elements --- */
+  --font-family-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  --font-family-code: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+
+  --radius-button: 50px;
+  --radius-standard: 4px;
+  
+  --shadow-interactive: 0 4px 8px rgba(0,0,0,0.15);
+  --shadow-interactive-hover: 0 6px 12px rgba(0,0,0,0.2);
+  --shadow-interactive-active: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-background-app);
+  color: var(--color-text-default); 
+}
+
+code {
+  font-family: var(--font-family-code);
+}
