@@ -8,7 +8,7 @@ function Step2_ClassSelection({ characterData, updateCharacterData, API_BASE_URL
 
   useEffect(() => {
     setLoading(true);
-    setParentError(null); // Clear parent error when step loads
+    setParentError(null); 
     axios.get(`${API_BASE_URL}/dnd/classes`)
       .then(response => {
         setClasses(response.data);
@@ -23,13 +23,17 @@ function Step2_ClassSelection({ characterData, updateCharacterData, API_BASE_URL
 
   const handleClassChange = (event) => {
     const classId = event.target.value ? parseInt(event.target.value, 10) : null;
-    updateCharacterData({ class_id: classId });
+    const selectedClass = classes.find(c => c.class_id === classId);
+    
+    updateCharacterData({ 
+      class_id: classId,
+      class_hit_die: selectedClass ? selectedClass.hit_die : null // Store hit_die
+    });
   };
 
   const selectedClassDetails = characterData.class_id ? classes.find(c => c.class_id === characterData.class_id) : null;
 
   if (loading) return <p>Loading classes...</p>;
-  // Parent wizard will display errors set by setParentError
 
   return (
     <div>
@@ -44,7 +48,7 @@ function Step2_ClassSelection({ characterData, updateCharacterData, API_BASE_URL
         <option value="">-- Select a Class --</option>
         {classes.map(dndClass => (
           <option key={dndClass.class_id} value={dndClass.class_id}>
-            {dndClass.name}
+            {dndClass.name} (Hit Die: d{dndClass.hit_die})
           </option>
         ))}
       </select>
@@ -54,9 +58,7 @@ function Step2_ClassSelection({ characterData, updateCharacterData, API_BASE_URL
           <h4>{selectedClassDetails.name}</h4>
           {selectedClassDetails.description && <p><strong>Description:</strong> {selectedClassDetails.description}</p>}
           <p><strong>Hit Die:</strong> d{selectedClassDetails.hit_die}</p>
-          {/* You can add more class details here, e.g., proficiencies, features by level */}
-          {/* For example, to show saving throw proficiencies, you'd need to map IDs to ability names */}
-          {/* This might require fetching abilities data here or passing it down if already fetched by wizard */}
+          {/* You can add more class details here */}
         </div>
       )}
     </div>

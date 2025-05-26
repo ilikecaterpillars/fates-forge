@@ -1,0 +1,46 @@
+/* frontend/app/src/components/common/Button/Button.module.css */
+.button {
+  background-color: #3498db;    /* Blue from your 'Enter the Forge' button */
+  color: #ffffff;                /* White text */
+  border: none;                  /* No border, as per the screenshot */
+  padding: clamp(14px, 3.8vh, 18px) clamp(30px, 7.5vw, 40px); /* Generous padding */
+  font-size: clamp(1.2em, 4.2vw, 1.5em); /* Consistent font size */
+  font-weight: 600;
+  border-radius: 50px;           /* Pill shape */
+  cursor: pointer;
+  text-decoration: none; 
+  display: inline-block;         /* Default display */
+  text-align: center;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  line-height: 1.4; 
+  white-space: nowrap;
+  text-transform: uppercase;     /* Uppercase text for all buttons */
+  letter-spacing: 0.8px;       /* Letter spacing for uppercase style */
+}
+
+.button:hover:not([disabled]) { /* Combined :not(:disabled) directly */
+  background-color: #2980b9;    /* Darker blue on hover */
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.button:active:not([disabled]) {
+  transform: translateY(0px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+/* Modifier for buttons that need to take full width of their container */
+/* This is applied via the className prop in HomePage.js */
+.fullWidth {
+  display: block;
+  width: 100%;
+}
+
+.disabled {
+  background-color: #7f8c8d !important; 
+  color: #bdc3c7 !important;          
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}

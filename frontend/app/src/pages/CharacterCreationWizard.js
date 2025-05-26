@@ -11,16 +11,16 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:100
 const TOTAL_WIZARD_STEPS = 4; // Assuming this remains the same
 
 function CharacterCreationWizard() {
-  const { campaignId } = useParams(); // Changed from projectId
+  const { campaignId } = useParams();
   const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState(0); 
   const [characterData, setCharacterData] = useState({
-    // campaign_id: parseInt(campaignId, 10), // campaignId is part of the URL, not usually in the body for this type of POST
     character_name: '',
     level: 1,
     race_id: null,
     class_id: null,
+    class_hit_die: null, // Added to store hit_die
     background_id: null,
     alignment_id: null,
     strength: 10,
@@ -29,20 +29,21 @@ function CharacterCreationWizard() {
     intelligence: 10,
     wisdom: 10,
     charisma: 10,
-    max_hp: 10, // You might want to calculate this based on class/con later
+    max_hp: 10, 
   });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // useEffect to ensure campaignId is valid, though the route should handle non-existent campaigns.
-  // If campaignId changes (e.g. browser back/fwd to a different wizard), reset state.
   useEffect(() => {
+    // Reset state when campaignId changes
     setCurrentStep(0);
     setCharacterData({
       character_name: '',
       level: 1,
       race_id: null,
       class_id: null,
+      class_hit_die: null, // Reset hit_die
       background_id: null,
       alignment_id: null,
       strength: 10,
@@ -243,12 +244,9 @@ function CharacterCreationWizard() {
       )}
       {currentStep === 3 && (
         <Step3_AbilityScores
-          characterData={characterData}
+          characterData={characterData} // Pass the whole characterData
           updateCharacterData={updateCharacterData}
           setParentError={setError}
-          // Pass max_hp and its setter if you want to manage it in Step3_AbilityScores
-          // max_hp={characterData.max_hp}
-          // updateMaxHp={(value) => updateCharacterData({ max_hp: parseInt(value, 10) || 1 })}
         />
       )}
       {currentStep === 4 && (

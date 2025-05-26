@@ -1,37 +1,62 @@
 // frontend/app/src/components/characterCreation/steps/Step3_AbilityScores.js
-import React from 'react'; // No useEffect or useState needed if all data comes from props
+import React, { useEffect, useState } from 'react';
+
+// Helper function to calculate D&D ability modifier
+const calculateModifier = (score) => {
+  if (isNaN(parseInt(score, 10))) return 0;
+  return Math.floor((parseInt(score, 10) - 10) / 2);
+};
 
 function Step3_AbilityScores({ characterData, updateCharacterData, setParentError }) {
+  const [suggestedHp, setSuggestedHp] = useState('');
 
   const handleScoreChange = (abilityKey, value) => {
     const score = parseInt(value, 10);
-    if (isNaN(score) && value !== '') { 
-        updateCharacterData({ [abilityKey]: '' }); 
-        return;
+    let newScore = value === '' ? '' : score;
+
+    if (isNaN(score) && value !== '') {
+      newScore = '';
+    } else if (value !== '') {
+      if (score < 1) newScore = 1;
+      if (score > 30) newScore = 30;
     }
-    if (value === '' || (score >= 1 && score <= 30)) {
-        updateCharacterData({ [abilityKey]: value === '' ? '' : score });
-        setParentError(null);
-    } else if (score < 1) {
-        updateCharacterData({ [abilityKey]: 1 });
-    } else if (score > 30) {
-        updateCharacterData({ [abilityKey]: 30 });
-    }
+    
+    updateCharacterData({ [abilityKey]: newScore });
+    setParentError(null);
   };
 
   const handleMaxHpChange = (value) => {
     const hp = parseInt(value, 10);
+    let newHp = value === '' ? '' : hp;
+
     if (isNaN(hp) && value !== '') {
-      updateCharacterData({ max_hp: '' });
-      return;
+      newHp = '';
+    } else if (value !== '' && hp < 1) {
+      newHp = 1;
     }
-    if (value === '' || hp >= 1) { // Basic validation for HP
-      updateCharacterData({ max_hp: value === '' ? '' : hp });
-      setParentError(null);
-    } else if (hp < 1) {
-      updateCharacterData({ max_hp: 1 });
-    }
+    updateCharacterData({ max_hp: newHp });
+    setParentError(null);
   };
+
+  useEffect(() => {
+    const conScore = parseInt(characterData.constitution, 10);
+    const classHitDie = parseInt(characterData.class_hit_die, 10);
+    const level = parseInt(characterData.level, 10);
+
+    if (level === 1 && !isNaN(conScore) && !isNaN(classHitDie) && classHitDie > 0) {
+      const conModifier = calculateModifier(conScore);
+      const calculatedHp = classHitDie + conModifier;
+      setSuggestedHp(`Suggested for Level 1: ${calculatedHp}`);
+      // Automatically set this as the max_hp for convenience at level 1
+      // User can still override if they type into the input manually
+      if (characterData.max_hp === '' || characterData.max_hp === 10) { // Only auto-set if it's default or empty
+         updateCharacterData({ max_hp: Math.max(1, calculatedHp) }); // Ensure HP is at least 1
+      }
+    } else {
+      setSuggestedHp(''); // Clear suggestion if not applicable
+    }
+  }, [characterData.constitution, characterData.class_hit_die, characterData.level, updateCharacterData, characterData.max_hp]);
+
 
   const abilities = [
     { key: 'strength', label: 'Strength (STR)' },
@@ -42,21 +67,10 @@ function Step3_AbilityScores({ characterData, updateCharacterData, setParentErro
     { key: 'charisma', label: 'Charisma (CHA)' },
   ];
 
-  // TODO: Future enhancement - Auto-calculate suggested HP based on class hit die and CON modifier
-  // For now, it's a manual input.
-  // const calculateSuggestedHp = () => {
-  //   if (characterData.class_id && characterData.constitution) {
-  //     // Logic to get class_hit_die based on characterData.class_id (might need API call or preloaded class data)
-  //     // Logic to calculate con_modifier from characterData.constitution
-  //     // return class_hit_die + con_modifier; // For level 1
-  //   }
-  //   return characterData.max_hp || 10; // Default or current value
-  // };
-
   return (
     <div>
       <h3>Set Ability Scores & Max HP</h3>
-      <p>Enter your character's ability scores (typically 1-20, max 30). Then set Max HP.</p>
+      <p>Enter ability scores (1-30). For Level 1 characters, Max HP will be suggested based on Class and Constitution.</p>
       {abilities.map(ability => (
         <div key={ability.key} style={{ marginBottom: '10px' }}>
           <label htmlFor={ability.key} style={{ marginRight: '10px', display: 'inline-block', width: '150px' }}>
@@ -72,6 +86,8 @@ function Step3_AbilityScores({ characterData, updateCharacterData, setParentErro
             max="30"
             style={{ width: '60px' }}
           />
+          {ability.key === 'constitution' && 
+           <span style={{ marginLeft: '10px' }}>(Mod: {calculateModifier(characterData.constitution)})</span>}
         </div>
       ))}
 
@@ -89,9 +105,8 @@ function Step3_AbilityScores({ characterData, updateCharacterData, setParentErro
           required
           style={{ width: '60px' }}
         />
-        {/* <small> (Suggested for Level 1: {calculateSuggestedHp()})</small> */}
+        {suggestedHp && <small style={{ marginLeft: '10px' }}>({suggestedHp})</small>}
       </div>
-      {/* Later, we can add options here for Standard Array, Point Buy, Rolling, etc. */}
     </div>
   );
 }
