@@ -1,32 +1,32 @@
 // frontend/app/src/App.js
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import './App.css'; // Ensure this is imported
+import './App.css';
 
-import ProjectListPage from './pages/ProjectListPage';
-import CreateProjectPage from './pages/CreateProjectPage';
-import ProjectDetailPage from './pages/ProjectDetailPage';
-import CreatePlayerCharacterPage from './pages/CreatePlayerCharacterPage';
+import CampaignListPage from './pages/CampaignListPage'; 
+import CreateCampaignPage from './pages/CreateCampaignPage'; 
+import CampaignDetailPage from './pages/CampaignDetailPage';
 import CharacterCreationWizard from './pages/CharacterCreationWizard';
 
 function App() {
   return (
     <Router>
-      <div className="App"> {/* This should be the main flex container */}
+      <div className="App">
         
         <header className="top-bar">
-          <Link to="/">Fable's Forge</Link> 
-          <Link to="/projects" style={{ marginLeft: '20px' }}>Projects</Link>
-          <Link to="/create-project">Create New Project</Link>
+          <Link to="/">Fate's Forge</Link> 
+          <Link to="/campaigns" style={{ marginLeft: '20px' }}>Campaigns</Link> 
+          <Link to="/create-campaign">Create New Campaign</Link>
         </header>
 
         <main className="main-content-area">
           <Routes>
-            <Route path="/" element={<ProjectListPage />} /> 
-            <Route path="/projects" element={<ProjectListPage />} />
-            <Route path="/create-project" element={<CreateProjectPage />} />
-            <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
-            <Route path="/projects/:projectId/create-character" element={<CharacterCreationWizard />} />          </Routes>
+            <Route path="/" element={<CampaignListPage />} /> 
+            <Route path="/campaigns" element={<CampaignListPage />} /> 
+            <Route path="/create-campaign" element={<CreateCampaignPage />} />
+            <Route path="/campaigns/:campaignId" element={<CampaignDetailPage />} />
+            <Route path="/campaigns/:campaignId/create-character" element={<CharacterCreationWizard />} /> 
+          </Routes>
         </main>
 
         <footer className="bottom-input-bar">
