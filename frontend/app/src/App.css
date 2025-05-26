@@ -11,38 +11,94 @@ body,
 .App {
   display: flex;
   flex-direction: column;
-  min-height: 100svh;
+  min-height: 100svh; /* Changed from height: 100% to ensure full viewport height */
   background-color: var(--color-background-app);
 }
 
 /* Top Bar Styling */
 .top-bar {
   background-color: var(--color-background-header);
-  color: var(--color-text-on-primary);
-  padding: 10px 20px;
+  padding: 10px 20px; /* Standard padding for the bar */
   flex-shrink: 0;
   border-bottom: 1px solid var(--color-border);
+  display: flex; /* For aligning default links or wizard steps */
+  align-items: center; /* Vertically center items in the bar */
+  overflow-x: auto; /* Allow horizontal scrolling if wizard steps overflow */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+.top-bar::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, Edge */
 }
 
+/* Default links in the top bar */
 .top-bar a {
   color: var(--color-text-default); 
   margin-right: 20px;
   text-decoration: none;
   font-weight: 500;
+  white-space: nowrap; /* Prevent default links from wrapping */
+  flex-shrink: 0; /* Prevent default links from shrinking if space is tight */
 }
 
 .top-bar a:hover {
   color: var(--color-text-link-hover);
 }
 
+/* NEW STYLES for wizard steps when they appear in the main top-bar */
+.top-bar .nav-step-in-app-header {
+  padding: 8px 10px; /* Padding for each step item */
+  color: var(--color-text-default); 
+  font-weight: 500;
+  text-decoration: none;
+  text-transform: uppercase; 
+  font-size: 0.9em; 
+  border-bottom: 3px solid transparent; /* For active state indicator */
+  margin-right: 15px; /* Spacing between step items */
+  cursor: pointer; 
+  transition: color 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap; /* Prevent step names from wrapping */
+  flex-shrink: 0; /* Prevent items from shrinking if the bar is crowded */
+  line-height: normal; /* Ensure consistent line height */
+}
+
+.top-bar .nav-step-in-app-header:last-child {
+  margin-right: 0; /* No margin for the last step item if it's at the end of the scroll */
+}
+
+.top-bar .nav-step-in-app-header.active {
+  color: var(--palette-blue-accent); /* Highlight color from your theme.css */
+  border-bottom-color: var(--palette-blue-accent); /* Highlight color from your theme.css */
+  font-weight: 700; /* Make active step bolder */
+}
+
+.top-bar .nav-step-in-app-header.disabled {
+  color: var(--palette-grey-medium); /* Disabled color from your theme.css */
+  cursor: not-allowed;
+  opacity: 0.7; /* Optional: slightly faded look for non-clickable steps */
+}
+
+
 /* Main Content Area Styling */
 .main-content-area {
   flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
+  padding: 20px; /* Default padding for content pages */
+  overflow-y: auto; /* Allow content to scroll if it exceeds viewport height */
   background-color: var(--color-background-content);
   color: var(--color-text-default);
 }
+
+/* If CharacterCreationWizard needs to be full-bleed and not use .main-content-area's padding:
+   You might need a wrapper in App.js for routes that are full-bleed vs those that use .main-content-area.
+   Or, CharacterCreationWizard.js's outermost container (.wizardPageContainer) could use negative margins
+   to counteract .main-content-area padding if it's rendered within it.
+   Example (if wizard is inside .main-content-area but needs to be full bleed for its header):
+   .wizardPageContainer { margin: -20px; } // Counteracts padding: 20px;
+   Then its internal .wizardTopNav would have its own padding.
+   However, the current approach with the dynamic header in App.js means the wizard content
+   will naturally sit within .main-content-area.
+*/
+
 
 .main-content-area h1,
 .main-content-area h2,
@@ -87,24 +143,40 @@ body,
   color: var(--color-text-default);
 }
 
-.main-content-area form input[type="text"] {
-  padding: 8px;
+.main-content-area form input[type="text"],
+.main-content-area form input[type="number"], /* Added number for consistency */
+.main-content-area form select, /* Added select for consistency */
+.main-content-area form textarea /* Added textarea for consistency */
+{
+  padding: 8px 10px; /* Consistent padding */
   border: 1px solid var(--color-border-input);
   border-radius: var(--radius-standard);
-  width: calc(100% - 18px);
-  max-width: 400px;
+  width: 100%; /* Make form elements take full width of their container */
+  max-width: 400px; /* But not too wide */
   background-color: var(--color-background-input);
   color: var(--color-text-default);
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  font-family: var(--font-family-main); /* Ensure consistent font */
+  font-size: 1em; /* Ensure consistent font size */
+}
+.main-content-area form input[type="number"] {
+    max-width: 100px; /* Numbers usually don't need to be very wide */
 }
 
+
 /* cancel-button style remains for native buttons until they are refactored */
-/* This will be addressed later as per your previous instruction */
 button.cancel-button {
-  background-color: var(--color-button-disabled-bg);
-  /* color: var(--color-text-on-primary); */
+  background-color: var(--color-button-disabled-bg); /* Using theme variable */
+  color: var(--color-text-disabled); /* Using theme variable */
+  /* Add other button styles like padding, border-radius if not handled by a global button style */
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  font-weight: 600;
 }
 button.cancel-button:hover {
-  background-color: #95a5a6; /* TODO: Convert to a variable e.g. var(--palette-grey-medium-hover) if defined */
+  background-color: var(--palette-grey-medium); /* A slightly darker shade for hover */
 }
 
 /* Error Messages */
@@ -112,9 +184,12 @@ button.cancel-button:hover {
   color: var(--color-error);
   font-weight: bold;
   background-color: var(--color-error-bg);
-  padding: 8px;
+  padding: 8px 12px; /* Added horizontal padding */
   border-radius: var(--radius-standard);
   border: 1px solid var(--color-error);
+  margin-top: 10px; /* Add some space above the error message */
+  margin-bottom: 10px; /* Add some space below the error message */
+  text-align: center; /* Center the text if it's a block */
 }
 
 /* Bottom Input Bar Styling */

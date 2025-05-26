@@ -100,7 +100,7 @@ function PlayerCharacterListPage() {
   }, []);
 
   if (loading) {
-    return <div className={styles.pageContainer}><p>Loading character templates...</p></div>;
+    return <div className={styles.pageContainer}><p>Loading characters...</p></div>;
   }
 
   return (
@@ -149,7 +149,7 @@ function PlayerCharacterListPage() {
 
       <div className={styles.createButtonContainerFixed}>
         <div className={styles.createButtonInnerContainer}>
-          <Button to="/create-player-character-template" className={styles.createButton}>
+          <Button to="/create-player-character" className={styles.createButton}>
             CREATE NEW CHARACTER
           </Button>
         </div>

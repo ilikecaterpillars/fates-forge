@@ -34,6 +34,14 @@ DROP TABLE IF EXISTS dnd_races CASCADE;
 DROP TABLE IF EXISTS dnd_alignments CASCADE;
 DROP TABLE IF EXISTS dnd_abilities CASCADE;
 
+DROP TABLE IF EXISTS character_templates CASCADE;
+DROP TABLE IF EXISTS template_proficiencies CASCADE;
+DROP TABLE IF EXISTS template_known_spells CASCADE;
+DROP TABLE IF EXISTS template_prepared_spells CASCADE;
+DROP TABLE IF EXISTS template_inventory CASCADE;
+DROP TABLE IF EXISTS template_conditions CASCADE;
+
+
 -- ====================================================================
 -- D&D 5e CORE RULESET LOOKUP TABLES
 -- ====================================================================
@@ -447,6 +455,7 @@ CREATE TABLE live_sessions (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, 
     last_updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
 COMMENT ON TABLE live_sessions IS 'Stores the dynamic state of an active game session for a campaign.';
 COMMENT ON COLUMN live_sessions.campaign_id IS 'Link to the parent campaign; UNIQUE ensures one active live session state per campaign.';
 COMMENT ON COLUMN live_sessions.current_location_id IS 'FK to world_locations, indicating the current map/area.';
@@ -457,6 +466,90 @@ COMMENT ON COLUMN live_sessions.combat_state IS 'JSONB to store details if comba
 COMMENT ON COLUMN live_sessions.event_log IS 'An array of textual descriptions of key events that have occurred.';
 COMMENT ON COLUMN live_sessions.player_preferences IS 'JSONB for storing player-specific preferences for the session.';
 COMMENT ON COLUMN live_sessions.character_states_session IS 'JSONB for session-specific PC states (HP overrides, conditions, expended resources not on main PC sheet).';
+
+-- ====================================================================
+-- CHARACTER TEMPLATE TABLES (Worldless)
+-- ====================================================================
+
+CREATE TABLE character_templates (
+    character_template_id SERIAL PRIMARY KEY,
+    character_name VARCHAR(255) NOT NULL UNIQUE,
+    level INT DEFAULT 1 NOT NULL,
+    experience_points INT DEFAULT 0,
+    race_id INT REFERENCES dnd_races(race_id),
+    class_id INT REFERENCES dnd_classes(class_id),
+    background_id INT REFERENCES dnd_backgrounds(background_id),
+    alignment_id INT REFERENCES dnd_alignments(alignment_id),
+    strength INT DEFAULT 10, dexterity INT DEFAULT 10, constitution INT DEFAULT 10,
+    intelligence INT DEFAULT 10, wisdom INT DEFAULT 10, charisma INT DEFAULT 10,
+    max_hp INT, current_hp INT, temporary_hp INT DEFAULT 0,
+    armor_class INT,
+    speed VARCHAR(50),
+    hit_dice_max TEXT,
+    hit_dice_current INT,
+    death_saves_successes INT DEFAULT 0, death_saves_failures INT DEFAULT 0,
+    spell_slots JSONB,
+    pact_magic_slots JSONB,
+    currency JSONB,
+    senses JSONB,
+    personality_traits TEXT, ideals TEXT, bonds TEXT, flaws TEXT,
+    backstory TEXT, appearance TEXT,
+    roleplaying_notes TEXT,
+    inspiration BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+COMMENT ON TABLE character_templates IS 'Stores D&D 5e worldless character templates/blueprints.';
+COMMENT ON COLUMN character_templates.character_name IS 'The unique name of the character template.';
+
+CREATE TABLE template_proficiencies (
+    template_proficiency_id SERIAL PRIMARY KEY,
+    character_template_id INT NOT NULL REFERENCES character_templates(character_template_id) ON DELETE CASCADE,
+    proficiency_id INT NOT NULL REFERENCES dnd_proficiencies(proficiency_id) ON DELETE CASCADE,
+    proficiency_level VARCHAR(20) DEFAULT 'proficient',
+    source_of_proficiency VARCHAR(100),
+    UNIQUE (character_template_id, proficiency_id)
+);
+COMMENT ON TABLE template_proficiencies IS 'Join table for character template proficiencies.';
+
+CREATE TABLE template_known_spells (
+    template_known_spell_id SERIAL PRIMARY KEY,
+    character_template_id INT NOT NULL REFERENCES character_templates(character_template_id) ON DELETE CASCADE,
+    spell_id INT NOT NULL REFERENCES dnd_spells(spell_id) ON DELETE CASCADE,
+    source_of_learning VARCHAR(100),
+    UNIQUE (character_template_id, spell_id)
+);
+COMMENT ON TABLE template_known_spells IS 'Spells a character template knows.';
+
+CREATE TABLE template_prepared_spells (
+    template_prepared_spell_id SERIAL PRIMARY KEY,
+    character_template_id INT NOT NULL REFERENCES character_templates(character_template_id) ON DELETE CASCADE,
+    spell_id INT NOT NULL REFERENCES dnd_spells(spell_id) ON DELETE CASCADE,
+    is_always_prepared BOOLEAN DEFAULT FALSE,
+    UNIQUE (character_template_id, spell_id)
+);
+COMMENT ON TABLE template_prepared_spells IS 'Spells a character template has prepared.';
+
+CREATE TABLE template_inventory (
+    template_inventory_id SERIAL PRIMARY KEY,
+    character_template_id INT NOT NULL REFERENCES character_templates(character_template_id) ON DELETE CASCADE,
+    item_id INT NOT NULL REFERENCES dnd_items(item_id) ON DELETE CASCADE,
+    quantity INT DEFAULT 1,
+    is_equipped BOOLEAN DEFAULT FALSE,
+    is_attuned BOOLEAN DEFAULT FALSE
+);
+COMMENT ON TABLE template_inventory IS 'Join table for items in a character template''s inventory.';
+
+CREATE TABLE template_conditions (
+    template_condition_id SERIAL PRIMARY KEY,
+    character_template_id INT NOT NULL REFERENCES character_templates(character_template_id) ON DELETE CASCADE,
+    condition_id INT NOT NULL REFERENCES dnd_conditions(condition_id) ON DELETE CASCADE,
+    source TEXT,
+    duration_turns INT,
+    applied_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (character_template_id, condition_id, source)
+);
+COMMENT ON TABLE template_conditions IS 'Tracks active conditions on a character template (less common for templates, but included for structural consistency).';
 
 -- ====================================================================
 -- END OF SCHEMA SCRIPT
