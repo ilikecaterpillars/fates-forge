@@ -1,11 +1,9 @@
 // frontend/app/src/App.js
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState }from 'react'; // Added useState and useEffect for AppLayout
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import './App.css'; // Main app styles
 import './theme.css'; // Your theme variables
 
-// 1. Import Context Provider and Hook
-// Ensure this path is correct based on where you saved CharacterWizardContext.js
 import { CharacterWizardProvider, useCharacterWizard } from './contexts/CharacterWizardContext'; 
 
 // Page Components
@@ -13,38 +11,75 @@ import HomePage from './pages/HomePage/HomePage';
 import CampaignListPage from './pages/CampaignListPage';
 import CreateCampaignPage from './pages/CreateCampaignPage';
 import CampaignDetailPage from './pages/CampaignDetailPage';
-// Adjust path if you moved CharacterCreationWizard, e.g., './pages/CharacterCreationPage/CharacterCreationWizard'
-import CharacterCreationWizard from './pages/CharacterCreationWizard'; 
+import CharacterCreationWizard from './pages/CharacterCreationPage/CharacterCreationWizard'; 
 import PlayerCharacterListPage from './pages/PlayerCharacterListPage/PlayerCharacterListPage';
 
-// Define which routes are for the character wizard
-const WIZARD_ROUTES_PATTERNS = [
+// --- Configuration for Component Visibility ---
+
+// Patterns for routes where the Character Creation Wizard is active
+const WIZARD_ROUTE_PATTERNS = [
   '/create-player-character', 
   '/campaigns/:campaignId/create-character'
 ];
 
-// Define routes where the default global footer bar should be hidden
-const NO_GLOBAL_FOOTER_PATHS = ['/', '/player-characters']; 
+// Helper to check if the current path is a wizard route
+const isWizardRoute = (pathname) => {
+  return WIZARD_ROUTE_PATTERNS.some(pattern => {
+    if (pattern.includes('/:campaignId')) {
+      const base = pattern.split('/:campaignId')[0];
+      const regex = new RegExp(`^${base}/[^/]+/create-character$`);
+      return regex.test(pathname);
+    }
+    return pathname === pattern;
+  });
+};
 
-// Component to render the dynamic top bar content
+// Patterns for routes where the MAIN header (DynamicAppTopBar) should be shown
+const SHOW_HEADER_PATTERNS = [
+  '/create-campaign',                 // Create Campaign page
+  '/campaigns/:campaignId$',          // Campaign Detail page (exact match for pattern like /campaigns/123)
+  ...WIZARD_ROUTE_PATTERNS            // All wizard routes
+];
+
+// Patterns for routes where the GLOBAL footer should be shown
+const SHOW_FOOTER_PATTERNS = [
+  '/create-campaign',
+  '/campaigns/:campaignId$'           // Campaign Detail page
+];
+
+// Helper to check if current path matches any of the given patterns
+const pathMatchesAny = (pathname, patterns) => {
+  return patterns.some(pattern => {
+    // Exact match for non-parameterized routes
+    if (!pattern.includes(':')) {
+      return pathname === pattern;
+    }
+    // Regex for parameterized routes (e.g., /campaigns/:campaignId)
+    // This will match /campaigns/123 but not /campaigns/123/something-else
+    if (pattern.endsWith('$')) { // Indicates an "exact" parameterized match
+        const regexPattern = '^' + pattern.replace(/:\w+\$/, '[^/]+') + '$';
+        return new RegExp(regexPattern).test(pathname);
+    }
+    // For wizard routes that might be nested or complex (already handled by isWizardRoute)
+    // For other generic parameterized patterns (if any in future), a simple startsWith might be too broad.
+    // The wizard check is more specific.
+    return false; 
+  });
+};
+
+
+// --- Components ---
+
 function DynamicAppTopBar() {
-  const wizardContext = useCharacterWizard(); // Consume the context
+  const wizardContext = useCharacterWizard();
   const location = useLocation();
 
-  // Check if the current route is a wizard route
-  const isWizardRouteActive = WIZARD_ROUTES_PATTERNS.some(pattern => {
-    if (pattern.includes('/:campaignId')) {
-      const routeBase = pattern.split('/:campaignId')[0]; 
-      return location.pathname.startsWith(basePattern) && location.pathname.endsWith('/create-character');
-    }
-    return location.pathname === pattern;
-  });
-
-  const displayWizardNav = wizardContext && wizardContext.isWizardActive && isWizardRouteActive;
+  // Determine if the wizard navigation should be active for the current route
+  const shouldDisplayWizardNav = wizardContext && wizardContext.isWizardActive && isWizardRoute(location.pathname);
 
   return (
-    <header className="top-bar"> {/* Uses styles from App.css for the bar itself */}
-      {displayWizardNav && wizardContext.wizardSteps && wizardContext.wizardSteps.length > 0 ? (
+    <header className="top-bar">
+      {shouldDisplayWizardNav && wizardContext.wizardSteps && wizardContext.wizardSteps.length > 0 ? (
         // Render wizard steps
         wizardContext.wizardSteps.map((step, index) => (
           <div
@@ -64,46 +99,33 @@ function DynamicAppTopBar() {
               }
             }}
           >
-            {step.name} {/* Display step name (e.g., "BASIC INFO") */}
+            {step.name}
           </div>
         ))
       ) : (
-        // Render default navigation links
-        <>
-          <Link to="/">Fate's Forge</Link>
-          <Link to="/campaigns">Campaigns</Link>
-          <Link to="/player-characters">Characters</Link>
-        </>
+        // Default header links are now removed.
+        // This part will be empty if the header is shown on a non-wizard page.
+        null 
       )}
     </header>
   );
 }
 
-// Main AppLayout component
 function AppLayout() {
   const location = useLocation();
-  const [showMainFooter, setShowMainFooter] = useState(true);
+  const currentPath = location.pathname;
+  
+  const isCurrentlyOnWizardRoute = isWizardRoute(currentPath); 
 
-  useEffect(() => {
-    const isWizardRouteActive = WIZARD_ROUTES_PATTERNS.some(pattern => {
-      if (pattern.includes('/:campaignId')) {
-        const basePattern = pattern.split('/:campaignId')[0];
-        return location.pathname.startsWith(basePattern) && location.pathname.endsWith('/create-character');
-      }
-      return location.pathname === pattern;
-    });
-
-    if (isWizardRouteActive || NO_GLOBAL_FOOTER_PATHS.some(path => location.pathname === path || (path !=='/' && location.pathname.startsWith(path)))) {
-      setShowMainFooter(false);
-    } else {
-      setShowMainFooter(true);
-    }
-  }, [location.pathname]);
+  const showHeader = pathMatchesAny(currentPath, SHOW_HEADER_PATTERNS);
+  const showMainFooter = !isCurrentlyOnWizardRoute && pathMatchesAny(currentPath, SHOW_FOOTER_PATTERNS);
 
   return (
     <div className="App"> 
-      <DynamicAppTopBar /> 
+      {showHeader && <DynamicAppTopBar />}
       
+      {/* Main content area will now be non-scrolling by default. 
+          Individual pages/components inside it must manage their own scrolling if needed. */}
       <main className="main-content-area">
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -134,11 +156,11 @@ function AppLayout() {
   );
 }
 
-// Main App component: Wrap the entire application with the CharacterWizardProvider
+
 function App() {
   return (
     <Router>
-      <CharacterWizardProvider> {/* Provider now wraps the whole app */}
+      <CharacterWizardProvider>
         <AppLayout />
       </CharacterWizardProvider>
     </Router>

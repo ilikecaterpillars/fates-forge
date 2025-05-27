@@ -76,6 +76,14 @@
   --shadow-interactive: 0 4px 8px rgba(0,0,0,0.15);
   --shadow-interactive-hover: 0 6px 12px rgba(0,0,0,0.2);
   --shadow-interactive-active: 0 2px 5px rgba(0,0,0,0.15);
+  
+  --page-padding-horizontal: 15px;
+  --page-padding-vertical: 20px;
+  --page-header-padding-vertical: 20px;
+  --page-header-padding-bottom: 10px;
+  --page-footer-padding-vertical: 15px;
+  --page-footer-padding-bottom: 20px;
+  --footer-clearance-padding: 90px; 
 }
 
 body {

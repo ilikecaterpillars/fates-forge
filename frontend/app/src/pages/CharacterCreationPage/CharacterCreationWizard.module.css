@@ -3,31 +3,27 @@
 .wizardPageContainer {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Use vh for viewport height */
-  background-color: var(--color-background-app); /* Main app background */
-  /* This container is the new "page" if App.js bars are hidden */
-  /* It does not need max-width or horizontal margins if it's meant to be the full page */
+  height: 100%; 
+  width: 100%;  
+  background-color: var(--color-background-app);
+  overflow: hidden; 
 }
 
 .wizardTopNav {
-  /* These styles aim to make it behave like the original .top-bar in App.css */
   background-color: var(--color-background-header);
-  /* Padding for the bar itself, creating the inset for its content */
   padding: 10px 20px; 
-  width: 100%; /* Crucial for full width of the viewport/parent */
-  box-sizing: border-box; /* Include padding in the 100% width calculation */
-  flex-shrink: 0; /* Prevent this bar from shrinking */
+  width: 100%; 
+  box-sizing: border-box; 
+  flex-shrink: 0; 
   border-bottom: 1px solid var(--color-border);
-  
-  /* Flex properties for the step items inside */
   display: flex;
-  align-items: center; /* Vertically center the step items */
-  overflow-x: auto; /* Allow horizontal scrolling for step items */
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  align-items: center; 
+  overflow-x: auto; 
+  -webkit-overflow-scrolling: touch; 
+  scrollbar-width: none;
 }
 .wizardTopNav::-webkit-scrollbar {
-  display: none; /* Hide scrollbar for Chrome, Safari, Edge */
+  display: none; 
 }
 
 .navStep {
@@ -36,33 +32,27 @@
   text-decoration: none; 
   text-transform: uppercase; 
   font-size: 0.9em; 
-  
-  /* Individual step items should not have horizontal padding if the bar has it,
-     unless you want double padding. Margin is for spacing between items. */
-  padding: 5px 0; /* Minimal vertical padding for the text itself */
-  margin-right: 20px; /* Space between step names, like original .top-bar a */
-  
-  border-bottom: 3px solid transparent; /* For active state indicator */
-  
+  padding: 5px 0; 
+  margin-right: 20px; 
+  border-bottom: 3px solid transparent; 
   cursor: pointer; 
-  white-space: nowrap; /* Prevent individual step names from wrapping */
-  flex-shrink: 0; /* Prevent steps from shrinking if space is tight */
+  white-space: nowrap; 
+  flex-shrink: 0; 
   transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .navStep:last-child {
-  margin-right: 0; /* No margin for the last item if scrollbar is hidden */
-                   /* If scrollbar is visible, this might look slightly off without extra padding on the container */
+  margin-right: 0;
 }
 
 .navStepActive {
-  color: var(--palette-blue-accent); /* theme.css variable */
-  border-bottom-color: var(--palette-blue-accent); /* theme.css variable */
+  color: var(--palette-blue-accent); 
+  border-bottom-color: var(--palette-blue-accent); 
   font-weight: 700; 
 }
 
 .navStepDisabled {
-  color: var(--palette-grey-medium); /* theme.css variable */
+  color: var(--palette-grey-medium); 
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -72,56 +62,60 @@
   font-size: clamp(1.5em, 5vw, 1.8em);
   color: var(--color-text-heading);
   font-weight: 600;
-  margin: 20px 15px 15px 15px; /* Centered with some vertical margin */
+  margin: var(--page-header-padding-vertical);
   text-transform: uppercase;
-  /* No max-width here if it's just a title above the main content area */
+  flex-shrink: 0; 
 }
 
 .wizardContent {
   flex-grow: 1; 
-  padding: 20px; 
-  max-width: 900px; /* Max width for the actual step content area */
+  overflow-y: auto;
+  padding: var(--page-padding-vertical, 20px) var(--page-padding-horizontal, 15px);
+  padding-bottom: var(--footer-clearance-padding, 90px);
+  max-width: 900px; 
   width: 100%;
-  margin: 0 auto 100px auto; /* Centered, with bottom margin for the fixed nav */
-  overflow-y: auto; 
+  margin-left: auto;
+  margin-right: auto;
   box-sizing: border-box;
-  /* background-color: var(--color-background-surface); /* Optional: if steps don't have own bg */
-  /* border-radius: var(--radius-standard); /* Optional */
 }
 
-.bottomNav {
-  position: fixed;
+.pageFixedFooter {
+  position: fixed; 
   bottom: 0;
   left: 0;
   right: 0;
   background-color: var(--color-background-app);
-  padding: 15px 35px 20px 35px;
+  padding: var(--page-padding-vertical, 20px) var(--page-padding-horizontal, 15px);
+  padding-bottom: var(--page-footer-padding-bottom, 20px);
   box-sizing: border-box;
-  z-index: 100;
+  z-index: 100; 
   border-top: 1px solid var(--color-border);
 }
 
-.bottomNavInnerContainer {
+.pageFixedFooter_innerContainer {
   width: 100%;
   max-width: 350px; 
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  justify-content: space-between;
+  align-items: center; 
+  gap: 10px; 
 }
 
-.navButton {
-  flex-grow: 1; 
-  margin: 0 5px; 
+.pageFixedFooter_secondaryAction { 
+  flex-grow: 0;   
+  flex-shrink: 0; 
 }
 
-.navButton.backButton { /* Example for specific button styling if needed */
-  flex-grow: 0; 
+.pageFixedFooter_primaryAction { 
+  flex-grow: 1;     
+  display: block;   
+  width: 100%;      
 }
 
 .errorMessageFixed {
   position: fixed;
-  bottom: 90px; 
+  bottom: calc(var(--footer-clearance-padding, 90px) - 5px);
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -136,3 +130,13 @@
   text-align: center;
   box-shadow: var(--shadow-interactive);
 }
+
+/* .pageContainer { 
+    border: 2px solid blue !important; 
+}
+.characterList { 
+    border: 2px solid lime !important; 
+}
+.characterCard { 
+    border: 2px solid red !important;
+} */

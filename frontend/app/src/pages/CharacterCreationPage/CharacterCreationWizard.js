@@ -2,11 +2,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-// Import the custom hook to use the context
-import { useCharacterWizard } from '../../contexts/CharacterWizardContext'; // Adjust path as needed
-
-import styles from './CharacterCreationWizard.module.css'; // Make sure you have this file
+import { useCharacterWizard } from '../../contexts/CharacterWizardContext'; 
+import styles from './CharacterCreationWizard.module.css'; // This import remains
 import Button from '../../components/common/Button/Button';
 
 // Import step components (ensure these paths are correct based on your renaming)
@@ -28,7 +25,7 @@ const WIZARD_STEPS_CONFIG = [
 ];
 const TOTAL_WIZARD_STEPS_DISPLAY = WIZARD_STEPS_CONFIG.length;
 
-function CharacterCreationWizard({ mode = "template" }) { // mode: "template" or "campaign"
+function CharacterCreationWizard({ mode = "template" }) {
   const { campaignId } = useParams();
   const navigate = useNavigate();
   
@@ -194,8 +191,6 @@ function CharacterCreationWizard({ mode = "template" }) { // mode: "template" or
   // It is assumed that App.js wraps the application with CharacterWizardProvider
   return (
       <div className={styles.wizardPageContainer}>
-        {/* The top navigation bar is now rendered by AppLayout using the context data */}
-        
         <h2 className={styles.pageTitle}>{wizardTitle}: {WIZARD_STEPS_CONFIG[currentDisplayStep].name}</h2>
         
         <main className={styles.wizardContent}>
@@ -207,14 +202,23 @@ function CharacterCreationWizard({ mode = "template" }) { // mode: "template" or
           />
         </main>
 
-        <footer className={styles.bottomNav}>
-          <div className={styles.bottomNavInnerContainer}>
+        {/* Using renamed classes for the footer */}
+        <footer className={styles.pageFixedFooter}> {/* Was .bottomNav */}
+          <div className={styles.pageFixedFooter_innerContainer}> {/* Was .bottomNavInnerContainer */}
             {currentDisplayStep > 0 && (
-              <Button onClick={handleBack} disabled={isSubmitting} className={`${styles.navButton} ${styles.backButton}`}>
+              <Button 
+                onClick={handleBack} 
+                disabled={isSubmitting} 
+                className={styles.pageFixedFooter_secondaryAction} /* Was .navButton .backButton */
+              >
                 Back
               </Button>
             )}
-            <Button onClick={handleNext} disabled={isSubmitting} className={`${styles.navButton} ${styles.nextButton}`}>
+            <Button 
+              onClick={handleNext} 
+              disabled={isSubmitting} 
+              className={styles.pageFixedFooter_primaryAction} /* Was .navButton .nextButton */
+            >
               {isSubmitting ? 'Saving...' : (currentDisplayStep < TOTAL_WIZARD_STEPS_DISPLAY - 1 ? 'Next' : 'Finish & Create Character')}
             </Button>
           </div>

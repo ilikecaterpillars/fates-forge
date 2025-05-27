@@ -1,18 +1,18 @@
 /* frontend/app/src/App.css */
-html,
-body,
-#root {
-  height: 100%;
+html, body, #root {
+  height: 100%; /* Consider min-height: 100% if any issues, but height:100% is often fine for this setup */
   margin: 0;
   padding: 0;
+  overflow: hidden; /* Prevent scrollbars on html/body */
 }
 
 /* App container itself uses variables defined in theme.css (via body style) */
 .App {
   display: flex;
   flex-direction: column;
-  min-height: 100svh; /* Changed from height: 100% to ensure full viewport height */
+  min-height: 100svh; /* Use svh for better mobile dynamic toolbar handling */
   background-color: var(--color-background-app);
+  overflow: hidden; /* Prevent .App itself from scrolling */
 }
 
 /* Top Bar Styling */
@@ -81,11 +81,22 @@ body,
 
 /* Main Content Area Styling */
 .main-content-area {
-  flex-grow: 1;
-  padding: 20px; /* Default padding for content pages */
-  overflow-y: auto; /* Allow content to scroll if it exceeds viewport height */
+  flex-grow: 1; /* Takes up available vertical space */
+  padding: 0; /* Remove global padding; pages/components manage their own */
+  overflow: hidden; /* Prevent this main area from scrolling by default */
+  display: flex; /* Allow children to use height: 100% and manage flex distribution */
+  flex-direction: column; /* Stack children vertically by default */
   background-color: var(--color-background-content);
   color: var(--color-text-default);
+}
+
+/* New style for when the wizard is hosted */
+.main-content-wizard-host {
+  flex-grow: 1; /* Takes up the remaining vertical space */
+  overflow: hidden; /* Prevents this host container itself from scrolling */
+  display: flex; /* Allows the wizardPageContainer child to use height: 100% */
+  flex-direction: column;
+  padding: 0; /* Wizard will manage its own internal padding */
 }
 
 /* If CharacterCreationWizard needs to be full-bleed and not use .main-content-area's padding:

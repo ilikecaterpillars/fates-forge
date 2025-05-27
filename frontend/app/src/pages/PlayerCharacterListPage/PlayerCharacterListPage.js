@@ -147,9 +147,10 @@ function PlayerCharacterListPage() {
         ))}
       </div>
 
-      <div className={styles.createButtonContainerFixed}>
-        <div className={styles.createButtonInnerContainer}>
-          <Button to="/create-player-character" className={styles.createButton}>
+      {/* Using renamed classes for the footer */}
+      <div className={styles.pageFixedFooter}> {/* Renamed from createButtonContainerFixed */}
+        <div className={styles.pageFixedFooter_innerContainer}> {/* Renamed from createButtonInnerContainer */}
+          <Button to="/create-player-character" className={styles.pageFixedFooter_primaryAction}> {/* Renamed from createButton */}
             CREATE NEW CHARACTER
           </Button>
         </div>
