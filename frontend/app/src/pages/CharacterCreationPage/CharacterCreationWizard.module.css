@@ -63,6 +63,7 @@
   color: var(--color-text-heading);
   font-weight: 600;
   margin: var(--page-header-padding-vertical);
+  margin-bottom: 10px;
   text-transform: uppercase;
   flex-shrink: 0; 
 }
@@ -72,7 +73,7 @@
   overflow-y: auto;
   padding: var(--page-padding-vertical, 20px) var(--page-padding-horizontal, 15px);
   padding-bottom: var(--footer-clearance-padding, 90px);
-  max-width: 900px; 
+  max-width: 430px; 
   width: 100%;
   margin-left: auto;
   margin-right: auto;
@@ -80,16 +81,15 @@
 }
 
 .pageFixedFooter {
-  position: fixed; 
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   background-color: var(--color-background-app);
-  padding: var(--page-padding-vertical, 20px) var(--page-padding-horizontal, 15px);
+  padding: var(--page-padding-vertical, 20px) var(--page-padding-horizontal, 15px); 
   padding-bottom: var(--page-footer-padding-bottom, 20px);
   box-sizing: border-box;
-  z-index: 100; 
-  border-top: 1px solid var(--color-border);
+  z-index: 10;
 }
 
 .pageFixedFooter_innerContainer {
@@ -99,7 +99,8 @@
   margin-right: auto;
   display: flex;
   align-items: center; 
-  gap: 10px; 
+  gap: 10px;
+  box-sizing: border-box;
 }
 
 .pageFixedFooter_secondaryAction { 
@@ -116,10 +117,11 @@
 .errorMessageFixed {
   position: fixed;
   bottom: calc(var(--footer-clearance-padding, 90px) - 5px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 400px; 
+  left: var(--page-padding-horizontal, 15px); /* Use your theme variable */
+  right: var(--page-padding-horizontal, 15px); /* Use your theme variable */
+  width: auto;
+  max-width: 350px;
+  box-sizing: border-box;
   z-index: 200; 
   color: var(--color-error);
   font-weight: bold;

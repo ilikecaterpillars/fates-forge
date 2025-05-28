@@ -155,9 +155,9 @@ html, body, #root {
 }
 
 .main-content-area form input[type="text"],
-.main-content-area form input[type="number"], /* Added number for consistency */
-.main-content-area form select, /* Added select for consistency */
-.main-content-area form textarea /* Added textarea for consistency */
+.main-content-area form input[type="number"],
+.main-content-area form select,
+.main-content-area form textarea
 {
   padding: 8px 10px; /* Consistent padding */
   border: 1px solid var(--color-border-input);

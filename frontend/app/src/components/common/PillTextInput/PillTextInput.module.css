@@ -1,0 +1,47 @@
+/* frontend/app/src/components/common/PillTextInput/PillTextInput.module.css */
+
+.inputPill {
+  background-color: var(--color-background-input);
+  color: var(--color-text-default);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-button); /* Uses your theme's button radius for pill shape */
+  padding: 10px 15px; /* Consistent padding, adjust as needed */
+  font-size: 1em; /* Or var(--font-size-standard) if you have one */
+  font-family: var(--font-family-main);
+  max-width: 400px;
+  width: 100%; /* Takes full width of its container by default */
+  box-sizing: border-box;
+  line-height: 1.4; /* Adjust for vertical text alignment if padding is generous */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputPill::placeholder {
+  color: var(--color-text-placeholder);
+  opacity: 1; /* Firefox */
+}
+
+.inputPill:focus,
+.inputPill:focus-visible { /* focus-visible for better accessibility */
+  outline: none;
+  border-color: var(--palette-blue-primary); /* Or your desired focus color */
+  box-shadow: 0 0 0 2px var(--palette-blue-accent-hover); /* Example focus ring */
+}
+
+.inputPill[type="number"] {
+  appearance: none;
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.inputPill[type="number"]::-webkit-inner-spin-button,
+.inputPill[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.inputPill:disabled {
+  background-color: var(--palette-charcoal-light); /* Slightly different disabled bg */
+  color: var(--color-text-disabled);
+  border-color: var(--palette-grey-darker);
+  cursor: not-allowed;
+  opacity: 0.7;
+}

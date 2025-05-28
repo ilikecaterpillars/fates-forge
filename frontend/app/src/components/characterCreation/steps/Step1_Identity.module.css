@@ -1,0 +1,68 @@
+/* frontend/app/src/components/characterCreation/steps/Step1_Identity.module.css */
+
+/* Styles for side-by-side Name and Level */
+.formRow {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 15px; 
+  margin-bottom: 20px;
+  align-items: flex-end;
+}
+
+.formFieldCharacterName {
+  flex: 3; 
+  min-width: 200px;
+}
+
+.formFieldLevel {
+  flex: 1; 
+  max-width: 50px;
+}
+
+/* Common style for labels within this step if not handled globally */
+.formFieldCharacterName label,
+.formFieldLevel label,
+.formFieldFull label { /* Added .formFieldFull label for consistency if you re-add alignment label */
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: var(--color-text-default);
+}
+
+
+/* Full width form field for elements like alignment dropdown */
+.formFieldFull {
+  margin-bottom: 10px;
+}
+
+/* Alignment Controls Styling */
+.alignmentControlContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alignmentDropdown {
+ flex-grow: 1; /* Make the dropdown take available space within the container */
+}
+
+.alignmentDescription {
+  margin-top: 10px;
+  padding: 10px;
+  padding-bottom: var(--footer-clearance-padding, 90px);
+  font-size: 0.9em;
+  color: var(--color-text-default);
+  overflow-y: auto; 
+  max-height: 45svh;
+  max-width: 430px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.alignmentDescription::-webkit-scrollbar {
+  display: none;
+}
+
+.alignmentDescription p {
+  margin: 0;
+}

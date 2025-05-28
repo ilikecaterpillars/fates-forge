@@ -1,0 +1,74 @@
+/* frontend/app/src/components/common/PillDropdown/PillDropdown.module.css */
+
+.dropdownWrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 400px;
+  width: 100%; /* Default to full width of its container */
+  background-color: var(--color-background-input);
+  color: var(--color-text-default);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-button); /* Pill shape from theme */
+  padding: 10px 15px;
+  padding-right: 35px; /* Make space for the arrow */
+  font-size: 1em;
+  font-family: var(--font-family-main);
+  cursor: pointer;
+  box-sizing: border-box;
+  line-height: 1.4; /* Adjust for vertical text centering */
+  text-align: left;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dropdownWrapper:focus-within, /* Style wrapper when hidden select inside is focused */
+.dropdownWrapper:focus {
+  outline: none;
+  border-color: var(--palette-blue-primary);
+  box-shadow: 0 0 0 2px var(--palette-blue-accent-hover);
+}
+
+.selectedText {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdownArrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* So it doesn't interfere with clicks on the wrapper */
+  font-size: 0.8em; /* Or use an SVG icon */
+  color: var(--color-text-placeholder);
+}
+
+.hiddenSelect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0; /* Makes the native select invisible */
+  cursor: pointer;
+  /* Allow native select to handle its own appearance for options list */
+  /* The following are attempts to style the native select, but are often overridden */
+  /* -webkit-appearance: none; 
+  -moz-appearance: none;
+  appearance: none;
+  background: transparent;
+  border: none; */
+}
+
+.dropdownWrapper.disabled {
+  background-color: var(--palette-charcoal-light);
+  color: var(--color-text-disabled);
+  border-color: var(--palette-grey-darker);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.dropdownWrapper.disabled .dropdownArrow {
+  color: var(--color-text-disabled);
+}

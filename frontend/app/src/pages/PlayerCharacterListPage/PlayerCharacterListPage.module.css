@@ -3,12 +3,11 @@
 .pageContainer {
   display: flex;
   flex-direction: column;
-  height: 100svh; 
   max-width: auto;
   margin: 0 0;
   background-color: var(--color-background-app);
   padding: var(--page-padding-vertical, 20px) var(--page-padding-horizontal, 15px);
-  padding-bottom: var(--footer-clearance-padding, 90px);
+  /* padding-bottom: var(--footer-clearance-padding, 90px); */
   box-sizing: border-box; 
 }
 
@@ -79,9 +78,9 @@
   scrollbar-width: none;
 }
 
-.characterList::-webkit-scrollbar {
+/* .characterList::-webkit-scrollbar {
   display: none;
-}
+} */
 
 .characterCardLink {
   text-decoration: none;

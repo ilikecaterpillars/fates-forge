@@ -2,12 +2,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useCharacterWizard } from '../../contexts/CharacterWizardContext'; 
-import styles from './CharacterCreationWizard.module.css'; // This import remains
+import { useCharacterWizard } from '../../contexts/CharacterWizardContext';
+import styles from './CharacterCreationWizard.module.css';
 import Button from '../../components/common/Button/Button';
 
-// Import step components (ensure these paths are correct based on your renaming)
-import Step0_BasicInfo from '../../components/characterCreation/steps/Step0_BasicInfo.js';
+// Import step components
+import Step1_Identity from '../../components/characterCreation/steps/Step1_Identity.js'; // Ensure Step0_BasicInfo.js is renamed to this
 import Step1_ClassSelection from '../../components/characterCreation/steps/Step1_ClassSelection.js';
 import Step2_RaceSelection from '../../components/characterCreation/steps/Step2_RaceSelection.js';
 import Step3_BackgroundAlignment from '../../components/characterCreation/steps/Step3_BackgroundAlignment.js';
@@ -15,28 +15,33 @@ import Step4_AbilityScores from '../../components/characterCreation/steps/Step4_
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:1001/api';
 
-// Configuration for wizard steps using your new file names/order
+// UPDATED: Configuration for wizard steps with the desired pagePrompt
 const WIZARD_STEPS_CONFIG = [
-  { name: 'BASIC INFO', component: Step0_BasicInfo, id: 'basic-info' },
-  { name: 'CLASS', component: Step1_ClassSelection, id: 'class' },
-  { name: 'RACE', component: Step2_RaceSelection, id: 'race' },
-  { name: 'BACKGROUND', component: Step3_BackgroundAlignment, id: 'background' },
-  { name: 'ABILITIES', component: Step4_AbilityScores, id: 'abilities' },
+  { name: 'IDENTITY', component: Step1_Identity, id: 'identity', pagePrompt: 'Define the core identity of your character.' },
+  { name: 'CLASS', component: Step1_ClassSelection, id: 'class', pagePrompt: 'Choose your character\'s class.' },
+  { name: 'RACE', component: Step2_RaceSelection, id: 'race', pagePrompt: 'Select your character\'s race.' },
+  { name: 'BACKGROUND', component: Step3_BackgroundAlignment, id: 'background', pagePrompt: 'Determine your character\'s background.' },
+  { name: 'ABILITIES', component: Step4_AbilityScores, id: 'abilities', pagePrompt: 'Set your character\'s ability scores.' },
 ];
 const TOTAL_WIZARD_STEPS_DISPLAY = WIZARD_STEPS_CONFIG.length;
 
 function CharacterCreationWizard({ mode = "template" }) {
   const { campaignId } = useParams();
   const navigate = useNavigate();
-  
-  // Get the function to update context from the CharacterWizardProvider in App.js
   const { updateWizardSharedState } = useCharacterWizard();
 
-  // Internal state for the wizard's own operation
   const [currentDisplayStep, setCurrentDisplayStepInternal] = useState(0);
+  // UPDATED: characterData state (player_name removed)
   const [characterData, setCharacterData] = useState({
-    character_name: '', level: 1, race_id: null, class_id: null, class_hit_die: null,
-    background_id: null, alignment_id: null, strength: 10, dexterity: 10,
+    character_name: '',
+    // player_name: '', // Removed
+    level: 1,
+    alignment_id: '',
+    race_id: null,
+    class_id: null,
+    class_hit_die: null,
+    background_id: null,
+    strength: 10, dexterity: 10,
     constitution: 10, intelligence: 10, wisdom: 10, charisma: 10, max_hp: 10,
     experience_points: 0, temporary_hp: 0,
   });
@@ -45,75 +50,78 @@ function CharacterCreationWizard({ mode = "template" }) {
   const [visitedSteps, setVisitedStepsInternal] = useState({0: true});
 
   const isCampaignMode = mode === "campaign" && campaignId;
-  const wizardTitle = "New Character"; 
-  const stepTitlePrefix = "Create New Character";
 
-  // This is the actual click handler for the top navigation steps (rendered by AppTopBar)
   const handleActualNavStepClick = useCallback((stepIndex) => {
-    if (visitedSteps[stepIndex] && !isSubmitting) { 
+    if (visitedSteps[stepIndex] && !isSubmitting) {
       setCurrentDisplayStepInternal(stepIndex);
     }
-  }, [visitedSteps, isSubmitting]); // Depends on this component's visitedSteps state
+  }, [visitedSteps, isSubmitting]);
 
-  // This useEffect hook updates the shared context when wizard's internal state changes or on mount/unmount.
   useEffect(() => {
     if (updateWizardSharedState) {
+      const stepsForContext = WIZARD_STEPS_CONFIG.map(step => ({ name: step.name, id: step.id })); // Pass only name and id for top nav
       updateWizardSharedState({
-        wizardSteps: WIZARD_STEPS_CONFIG,
-        currentDisplayStep: currentDisplayStep, // Share internal current step
-        isWizardActive: true,                   // Mark wizard as active
-        handleNavStepClick: handleActualNavStepClick, // Share the actual click handler
-        visitedSteps: visitedSteps                 // Share internal visited steps
+        wizardSteps: stepsForContext,
+        currentDisplayStep: currentDisplayStep,
+        isWizardActive: true,
+        handleNavStepClick: handleActualNavStepClick,
+        visitedSteps: visitedSteps
       });
     }
-    // Cleanup function for when the component unmounts
     return () => {
       if (updateWizardSharedState) {
-        updateWizardSharedState({ 
-          isWizardActive: false, // Mark wizard as inactive
-          wizardSteps: [],       // Clear wizard specific data from context
-          currentDisplayStep: 0, 
-          handleNavStepClick: () => {},
-          visitedSteps: {}
+        updateWizardSharedState({
+          isWizardActive: false, wizardSteps: [], currentDisplayStep: 0,
+          handleNavStepClick: () => {}, visitedSteps: {}
         });
       }
     };
-  }, [updateWizardSharedState, currentDisplayStep, visitedSteps, handleActualNavStepClick]); // Re-run if these change
-  
-  // Effect for initial setup and when mode/campaignId changes
+  }, [updateWizardSharedState, currentDisplayStep, visitedSteps, handleActualNavStepClick]);
+
   useEffect(() => {
     setCurrentDisplayStepInternal(0);
     setVisitedStepsInternal({0: true});
-    setCharacterData({
-      character_name: '', level: 1, race_id: null, class_id: null, class_hit_die: null,
-      background_id: null, alignment_id: null, strength: 10, dexterity: 10,
+    setCharacterData({ // Reset state
+      character_name: '',
+      // player_name: '', // Removed
+      level: 1,
+      alignment_id: '',
+      race_id: null,
+      class_id: null,
+      class_hit_die: null,
+      background_id: null,
+      strength: 10, dexterity: 10,
       constitution: 10, intelligence: 10, wisdom: 10, charisma: 10, max_hp: 10,
       experience_points: 0, temporary_hp: 0,
     });
     setError(null);
     setIsSubmitting(false);
   }, [mode, campaignId]);
-  
+
   const ActiveStepComponent = WIZARD_STEPS_CONFIG[currentDisplayStep].component;
 
-  const handleNext = () => { 
+  const handleNext = () => {
     setError(null);
     const currentStepConfig = WIZARD_STEPS_CONFIG[currentDisplayStep];
-    // --- Validation ---
-    if (currentStepConfig.name === 'BASIC INFO' && !characterData.character_name?.trim()) {
-      setError(`Character name cannot be empty to proceed.`); return;
+
+    if (currentStepConfig.id === 'identity') {
+      if (!characterData.character_name?.trim()) {
+        setError('Character name cannot be empty.'); return;
+      }
+      if (!characterData.alignment_id) {
+        setError('Please select an alignment.'); return;
+      }
     }
-    if (currentStepConfig.name === 'CLASS' && !characterData.class_id) {
-      setError('Please select a class.'); return;
+    if (currentStepConfig.id === 'class' && !characterData.class_id) {
+        setError('Please select a class.'); return;
     }
-    if (currentStepConfig.name === 'RACE' && !characterData.race_id) {
-      setError('Please select a race.'); return;
+    if (currentStepConfig.id === 'race' && !characterData.race_id) {
+        setError('Please select a race.'); return;
     }
-    if (currentStepConfig.name === 'BACKGROUND') {
+    if (currentStepConfig.id === 'background') {
       if (!characterData.background_id) { setError('Please select a background.'); return; }
-      if (!characterData.alignment_id) { setError('Please select an alignment.'); return; }
     }
-    if (currentStepConfig.name === 'ABILITIES') {
+    if (currentStepConfig.id === 'abilities') {
       const abilities = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
       for (const abi of abilities) {
         const score = characterData[abi];
@@ -125,7 +133,6 @@ function CharacterCreationWizard({ mode = "template" }) {
         setError('Max HP must be a positive number.'); return;
       }
     }
-    // --- End Validation ---
 
     if (currentDisplayStep < TOTAL_WIZARD_STEPS_DISPLAY - 1) {
       const nextStep = currentDisplayStep + 1;
@@ -136,7 +143,7 @@ function CharacterCreationWizard({ mode = "template" }) {
     }
   };
 
-  const handleBack = () => { 
+  const handleBack = () => {
     setError(null);
     if (currentDisplayStep > 0) {
       setCurrentDisplayStepInternal(prevStep => prevStep - 1);
@@ -145,26 +152,32 @@ function CharacterCreationWizard({ mode = "template" }) {
     }
   };
 
-  const updateCharacterData = (newData) => { 
+  const updateCharacterData = (newData) => {
     setCharacterData(prevData => ({ ...prevData, ...newData }));
     setError(null);
   };
 
-  const handleSubmit = async () => { 
+  const handleSubmit = async () => {
     setError(null);
-    if (!characterData.character_name?.trim() || !characterData.race_id || !characterData.class_id || 
-        !characterData.background_id || !characterData.alignment_id ) {
-        setError('Please complete all required fields in previous steps.');
-        return; 
+    if (!characterData.character_name?.trim() || !characterData.alignment_id || !characterData.race_id || !characterData.class_id ||
+        !characterData.background_id ) {
+        setError('Please ensure all core selections (Identity, Class, Race, Background) are made.');
+        return;
     }
-    // Additional comprehensive validation can go here if needed
+     const abilities = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+      for (const abi of abilities) {
+        if (isNaN(parseInt(characterData[abi], 10)) || parseInt(characterData[abi], 10) < 1 || parseInt(characterData[abi], 10) > 30) {
+          setError('Ensure all ability scores are valid numbers between 1 and 30.'); return;
+        }
+      }
+      if (isNaN(parseInt(characterData.max_hp, 10)) || parseInt(characterData.max_hp, 10) < 1) {
+        setError('Ensure Max HP is a valid positive number.'); return;
+      }
 
     setIsSubmitting(true);
     const templatePayload = { ...characterData };
-    // If you were collecting proficiencies, spells, inventory directly in the wizard's characterData state:
-    // templatePayload.proficiencies = characterData.proficiencies; 
-    // templatePayload.known_spells = characterData.known_spells;
-    // templatePayload.inventory = characterData.inventory; 
+     // Ensure player_name is not sent if it was removed from state
+    // delete templatePayload.player_name; // Or ensure it's not added if not in characterData
 
     try {
       const templateResponse = await axios.post(`${API_BASE_URL}/character-templates`, templatePayload);
@@ -187,43 +200,44 @@ function CharacterCreationWizard({ mode = "template" }) {
     }
   };
 
-  // This component does NOT render CharacterWizardContext.Provider
-  // It is assumed that App.js wraps the application with CharacterWizardProvider
   return (
       <div className={styles.wizardPageContainer}>
-        <h2 className={styles.pageTitle}>{wizardTitle}: {WIZARD_STEPS_CONFIG[currentDisplayStep].name}</h2>
-        
+        {/* UPDATED: Page Title to use only pagePrompt */}
+        <h2 className={styles.pageTitle}>
+          {WIZARD_STEPS_CONFIG[currentDisplayStep]?.pagePrompt || 'Create Character'}
+        </h2>
+
         <main className={styles.wizardContent}>
           <ActiveStepComponent
             characterData={characterData}
             updateCharacterData={updateCharacterData}
-            API_BASE_URL={API_BASE_URL} 
-            setParentError={setError}   
+            API_BASE_URL={API_BASE_URL}
+            setParentError={setError}
+            allCharacterData={characterData}
           />
         </main>
 
-        {/* Using renamed classes for the footer */}
-        <footer className={styles.pageFixedFooter}> {/* Was .bottomNav */}
-          <div className={styles.pageFixedFooter_innerContainer}> {/* Was .bottomNavInnerContainer */}
+        <footer className={styles.pageFixedFooter}>
+          <div className={styles.pageFixedFooter_innerContainer}>
             {currentDisplayStep > 0 && (
-              <Button 
-                onClick={handleBack} 
-                disabled={isSubmitting} 
-                className={styles.pageFixedFooter_secondaryAction} /* Was .navButton .backButton */
+              <Button
+                onClick={handleBack}
+                disabled={isSubmitting}
+                className={styles.pageFixedFooter_secondaryAction}
               >
                 Back
               </Button>
             )}
-            <Button 
-              onClick={handleNext} 
-              disabled={isSubmitting} 
-              className={styles.pageFixedFooter_primaryAction} /* Was .navButton .nextButton */
+            <Button
+              onClick={handleNext}
+              disabled={isSubmitting}
+              className={styles.pageFixedFooter_primaryAction}
             >
               {isSubmitting ? 'Saving...' : (currentDisplayStep < TOTAL_WIZARD_STEPS_DISPLAY - 1 ? 'Next' : 'Finish & Create Character')}
             </Button>
           </div>
         </footer>
-        
+
         {error && <p className={styles.errorMessageFixed}>{error}</p>}
       </div>
   );
