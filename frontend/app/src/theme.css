@@ -1,51 +1,35 @@
 /* frontend/app/src/theme.css */
-
 :root {
-  /* --- Foundational Color Palette --- */
-  /* Blues */
+  /* === START PREVIOUSLY DEFINED VARIABLES (Colors, Fonts, Radii etc.) === */
   --palette-blue-primary: #3498db;
   --palette-blue-primary-hover: #2980b9;
   --palette-blue-accent: #5dade2;
   --palette-blue-accent-hover: #85c1e9;
-
-  /* Neutrals - Greys & Whites */
   --palette-white: #ffffff;
   --palette-off-white: #ecf0f1;
   --palette-grey-light: #bdc3c7;
   --palette-grey-medium: #7f8c8d;
   --palette-grey-dark: #555;
   --palette-grey-darker: #4a4f58;
-  
-  /* Charcoals/Very Darks */
   --palette-charcoal-light: #3b4049;
   --palette-charcoal-medium: #2c3e50;
   --palette-charcoal-dark: #282c34;
   --palette-charcoal-deep: #1e2226;
-
-  /* Semantic States */
   --palette-red-error: #e74c3c;
   --palette-red-error-bg: rgba(231, 76, 60, 0.1);
 
-  /* --- Semantic Theme Variables (using the palette above) --- */
-
-  /* Core Interactive Elements */
   --color-primary-bg: var(--palette-blue-primary);
   --color-primary-bg-hover: var(--palette-blue-primary-hover);
   --color-accent-bg: var(--palette-blue-accent);
   --color-accent-bg-hover: var(--palette-blue-accent-hover);
-  
   --color-button-disabled-bg: var(--palette-grey-medium);
-
-  /* Backgrounds */
   --color-background-app: var(--palette-charcoal-dark);
-  --color-background-content: var(--palette-charcoal-dark);
+  --color-background-content: var(--palette-charcoal-dark); /* For .appBody, will match .appFooter */
   --color-background-header: var(--palette-charcoal-dark);
-  --color-background-footer: var(--palette-charcoal-deep);
+  --color-background-footer: var(--color-background-content); /* Ensure appFooter matches appBody bg */
   --color-background-surface: var(--palette-charcoal-light);
   --color-background-input: var(--palette-grey-darker);
   --color-background-input-alt: var(--palette-charcoal-medium);
-  
-  /* Text */
   --color-text-on-primary: var(--palette-white);
   --color-text-default: var(--palette-off-white);
   --color-text-heading: var(--palette-off-white);
@@ -54,16 +38,11 @@
   --color-text-disabled: var(--palette-grey-light);
   --color-text-placeholder: var(--palette-grey-light);
   --color-text-inverted: var(--palette-charcoal-medium);
-
-  /* Borders */
   --color-border: var(--palette-grey-darker);
   --color-border-input: var(--palette-grey-dark);
-
-  /* UI States & Semantic Feedback */
   --color-error: var(--palette-red-error);
   --color-error-bg: var(--palette-red-error-bg);
 
-  /* --- Other Theme Elements --- */
   --font-family-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -76,14 +55,30 @@
   --shadow-interactive: 0 4px 8px rgba(0,0,0,0.15);
   --shadow-interactive-hover: 0 6px 12px rgba(0,0,0,0.2);
   --shadow-interactive-active: 0 2px 5px rgba(0,0,0,0.15);
+  /* === END PREVIOUSLY DEFINED VARIABLES === */
+
+  /* I. PADDING FOR CONTENT *WITHIN* <PageHeaderComponent /> */
+  --page-header-padding-horizontal: 20px; 
+  --page-header-padding-vertical: 10px;   
+
+  /* II. PADDING FOR CONTENT *WITHIN* <PageFooterComponent /> */
+  --page-footer-padding-horizontal: 35px; 
+  --page-footer-padding-vertical: 20px; /* Increased for taller footer */ 
+
+  /* III. PADDING/MARGINS FOR ELEMENTS *WITHIN* A PAGE COMPONENT */
   
-  --page-padding-horizontal: 35px;
-  --page-padding-vertical: 20px;
-  --page-header-padding-vertical: 20px;
-  --page-header-padding-bottom: 10px;
-  --page-footer-padding-vertical: 15px;
-  --page-footer-padding-bottom: 20px;
-  --footer-clearance-padding: 90px; 
+  /* For the page's .pageTitle element/section wrapper */
+  --page-title-padding-horizontal: 35px; /* Max-width container handles horizontal positioning */
+  --page-title-padding-vertical: 20px;  
+  --page-title-padding-bottom: 10px;    
+
+  /* For the page's .pageBody div (main content area below title) */
+  --page-body-padding-horizontal: 35px; /* Max-width container handles horizontal positioning */
+  --page-body-padding-vertical: 10px;   
+  --page-body-padding-bottom: 20px;     
+  
+  /* SINGLE MAX WIDTH FOR ALL PAGE CONTENT BLOCKS */
+  --page-content-max-width: 450px; 
 }
 
 body {

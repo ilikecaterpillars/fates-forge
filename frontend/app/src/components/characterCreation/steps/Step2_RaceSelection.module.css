@@ -1,0 +1,154 @@
+/* frontend/app/src/components/characterCreation/steps/Step2_RaceSelection.module.css */
+
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Reduced gap slightly */
+}
+
+/* New row for side-by-side dropdowns */
+.raceSelectionRow {
+  display: flex;
+  gap: 15px; /* Gap between the two dropdowns */
+  align-items: flex-start; /* Align items to the top if labels make them uneven */
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.baseRaceField {
+  flex-grow: 1; /* Base race takes less space */
+  flex-basis: 150px; /* Suggest a base width */
+  min-width: 120px;
+}
+
+.subRaceField {
+  flex-grow: 2; /* Subrace takes more space */
+  flex-basis: 200px; /* Suggest a base width */
+  min-width: 150px;
+}
+
+
+.formField label {
+  font-weight: bold;
+  color: var(--color-text-default);
+  font-size: 0.9em; /* Slightly smaller label */
+  margin-bottom: 2px;
+}
+
+.detailsContainer {
+  margin-top: 5px; /* Reduced margin */
+  padding: 15px; /* Increased padding slightly for better spacing */
+  background-color: var(--color-background-surface);
+  border-radius: var(--radius-standard);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-default);
+  /* Scrolling behavior from your existing CSS */
+  overflow-y: auto; 
+  max-height: 55svh; /* Adjusted max-height, can be tuned */
+  /* padding-bottom: var(--footer-clearance-padding, 90px); /* Retain if content can go under footer */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.detailsContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.detailsContainer h3 { /* Race Name */
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: var(--color-text-heading);
+  font-size: 1.5em; /* Slightly larger for emphasis */
+  text-align: center;
+}
+.detailsContainer h4 { /* "Racial Traits" heading */
+  margin-top: 15px;
+  margin-bottom: 8px;
+  color: var(--color-text-heading);
+  font-size: 1.15em;
+  border-bottom: 1px solid var(--color-border-input);
+  padding-bottom: 5px;
+}
+.detailsContainer h5.parentFeaturesTitle { /* "Inherited Traits" heading */
+  margin-top: 15px;
+  margin-bottom: 8px;
+  font-size: 1em;
+  font-style: italic;
+  color: var(--palette-grey-light);
+}
+
+.descriptionText {
+  font-size: 0.9em;
+  line-height: 1.5;
+  margin-bottom: 15px;
+  text-align: justify;
+}
+
+.detailItem {
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--palette-charcoal-deep); /* Subtle separator for detail items */
+}
+.detailItem:last-of-type {
+    border-bottom: none;
+}
+
+.detailItem strong {
+  color: var(--color-text-default);
+  min-width: 150px; /* Give some space for the strong tag */
+  display: inline-block;
+}
+.detailItem span {
+  margin-left: 8px;
+  color: var(--palette-grey-light);
+}
+
+.featureList {
+  list-style: none;
+  padding-left: 0;
+  font-size: 0.9em;
+}
+
+.featureList li {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--color-border-input);
+}
+.featureList li:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.featureList strong { /* Feature name */
+  display: block;
+  color: var(--color-text-default);
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.featureDescription {
+  margin-top: 2px;
+  margin-left: 10px; /* Indent description slightly */
+  font-size: 0.9em; /* Slightly smaller than feature name */
+  color: var(--palette-grey-light);
+  line-height: 1.4;
+}
+.featureDescription p {
+    margin-top: 0;
+    margin-bottom: 3px;
+}
+.featureDescription p:last-child {
+    margin-bottom: 0;
+}
+
+.noFeaturesText, .promptText {
+    font-style: italic;
+    color: var(--color-text-placeholder);
+    padding: 10px;
+    text-align: center;
+}

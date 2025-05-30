@@ -1,0 +1,47 @@
+/* frontend/app/src/components/layout/PageHeader.module.css */
+.contentBlock { /* This div is inside .appHeader, gets max-width and padding */
+  width: 100%;
+  max-width: var(--page-content-max-width); /* Using the same max-width for content alignment */
+  margin-left: auto;
+  margin-right: auto;
+  padding: var(--page-header-padding-vertical) var(--page-header-padding-horizontal);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  min-height: 30px; /* Ensure some minimum height even if empty, adjust as needed */
+}
+.contentBlock::-webkit-scrollbar { 
+  display: none; 
+}
+
+.navStep {
+  padding: 8px 10px;
+  color: var(--color-text-default); 
+  font-weight: 500;
+  text-decoration: none;
+  text-transform: uppercase; 
+  font-size: 0.9em; 
+  border-bottom: 3px solid transparent;
+  margin-right: 15px;
+  cursor: pointer; 
+  transition: color 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: normal;
+}
+.navStep:last-child {
+  margin-right: 0;
+}
+.navStep.active {
+  color: var(--palette-blue-accent);
+  border-bottom-color: var(--palette-blue-accent);
+  font-weight: 700;
+}
+.navStep.disabled {
+  color: var(--palette-grey-medium);
+  cursor: not-allowed;
+  opacity: 0.7;
+}

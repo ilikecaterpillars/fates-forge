@@ -1,47 +1,55 @@
 /* frontend/app/src/pages/PlayerCharacterListPage/PlayerCharacterListPage.module.css */
 
-.pageContainer {
+/* Root div of the PlayerCharacterListPage component. Fills the .appBody from App.css */
+.pageContent {
   display: flex;
   flex-direction: column;
-  max-width: auto;
-  margin: 0 0;
-  background-color: var(--color-background-app);
-  padding: var(--page-padding-vertical, 20px) var(--page-padding-horizontal, 15px);
-  /* padding-bottom: var(--footer-clearance-padding, 90px); */
-  box-sizing: border-box; 
+  height: 100%; 
+  width: 100%;
+  overflow: hidden; /* This container itself does not scroll */
+  box-sizing: border-box;
+  background-color: var(--color-background-app); 
 }
 
-.pageHeaderFixed {
+/* This is a header section *within* the PlayerCharacterListPage */
+.pageHeaderSection { 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-top: var(--page-header-padding-vertical, 20px);
-  padding-bottom: var(--page-header-padding-bottom, 10px);
-  width: 100%;
+  align-items: center; /* Centers .pageTitle and .backButtonContainer if they don't have full width */
+  /* Padding for the content WITHIN this header section */
+  padding: var(--page-title-padding-vertical) 
+           var(--page-title-padding-horizontal) /* This padding defines the edges */
+           var(--page-title-padding-bottom);
+  width: 100%; /* Takes full available width */
+  max-width: var(--page-content-max-width); /* Apply the same max-width as the list */
+  margin-left: auto; /* Center this header section */
+  margin-right: auto; /* Center this header section */
   box-sizing: border-box;
-  background-color: var(--color-background-app);
-  z-index: 10;
+  background-color: var(--color-background-app); 
+  z-index: 5; 
   flex-shrink: 0;
 }
 
-.title {
+.pageTitle { 
   text-align: center;
   font-size: clamp(1.5em, 5vw, 1.8em);
   color: var(--color-text-heading);
   font-weight: 600;
   margin: 0 0 10px 0; 
   text-transform: uppercase;
+  width: 100%; /* Title text spans the width of .pageHeaderSection */
 }
 
 .backButtonContainer {
-  width: 100%;
-  max-width: 350px; 
-  margin: 5px auto 0 auto; 
+  width: 100%; /* Spans the full width of .pageHeaderSection (which is max-width constrained) */
+  /* max-width: 350px; REMOVED - parent .pageHeaderSection handles max-width */
+  /* margin: 5px auto 0 auto; REMOVED - parent .pageHeaderSection handles centering */
+  margin-top: 5px; /* Keep top margin for spacing */
   display: flex;
-  justify-content: flex-start; 
+  justify-content: flex-start; /* Aligns button to the left of this full-width (but constrained) container */
 }
 
-.backButton {
+.backButton { 
   padding: 8px 18px !important; 
   font-size: 0.9em !important;
   text-transform: none !important;
@@ -49,38 +57,39 @@
 }
 
 .errorContainer {
-  padding-top: 0;
-  padding-bottom: 10px; 
   width: 100%;
-  max-width: 350px;
-  margin: 0 auto 10px auto; 
+  max-width: var(--page-content-max-width); /* Align with other content blocks */
+  margin: 0 auto 10px auto; /* Centered */
+  padding: 0 var(--page-body-padding-horizontal); /* Consistent horizontal padding for content inside */
   box-sizing: border-box;
   flex-shrink: 0;
 }
 
-.pageError {
+.pageErrorGlobal {
   width: 100%;
   text-align: center;
   margin: 0;
 }
 
-.characterList {
-  flex-grow: 1;
-  overflow-y: auto;
-  width: 100%;
-  max-width: 350px; 
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 10px;
-  padding-bottom: 10px;
+.pageBody { /* The list of characters is the main body content for this page */
+  flex-grow: 1; 
+  overflow-y: auto; 
+  width: 100%; /* Takes full width to allow centering of its content */
+  max-width: var(--page-content-max-width); /* Apply the SAME max-width as .pageHeaderSection */
+  margin-left: auto; 
+  margin-right: auto; 
+  padding-top: var(--page-body-padding-vertical); 
+  padding-bottom: var(--page-body-padding-bottom); 
+  /* Horizontal padding for content *within* this centered, max-width block */
+  padding-left: var(--page-body-padding-horizontal); 
+  padding-right: var(--page-body-padding-horizontal); 
   box-sizing: border-box;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
-/* .characterList::-webkit-scrollbar {
-  display: none;
-} */
+.pageBody::-webkit-scrollbar { 
+  display: none; 
+}
 
 .characterCardLink {
   text-decoration: none;
@@ -154,47 +163,3 @@
   color: var(--color-text-placeholder);
   margin-left: 10px; 
 }
-
-.pageFixedFooter {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: var(--color-background-app);
-  padding: var(--page-padding-vertical, 20px) var(--page-padding-horizontal, 15px); 
-  padding-bottom: var(--page-footer-padding-bottom, 20px);
-  box-sizing: border-box;
-  z-index: 10;
-}
-
-.pageFixedFooter_innerContainer {
-  width: 100%;
-  max-width: 350px; 
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.pageFixedFooter_primaryAction {
-  width: 100%;
-  display: block; 
-}
-
-/* --- Debug borders (temporary) --- */
-/* Add to HomePage.module.css */
-/* .mainMenuScreen { border: 2px solid red !important; } */
-/* .mainMenuNav { border: 2px solid blue !important; } */
-
-/* Add to PlayerCharacterListPage.module.css */
-/* .characterList { border: 2px solid lime !important; }
-.pageFixedFooter_innerContainer { border: 2px solid hotpink !important; }
-.pageFixedFooter { border: 2px solid yellow !important; } */
-
-/* .pageContainer { 
-    border: 2px solid blue !important; 
-}
-.characterList { 
-    border: 2px solid lime !important; 
-}
-.characterCard { 
-    border: 2px solid red !important;
-} */

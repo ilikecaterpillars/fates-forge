@@ -2,96 +2,106 @@
 
 Fate's Forge is a web application designed to be an all-in-one interactive design and play environment for D&D-style text-based roleplaying games. It enables users to generate richly detailed fantasy worlds, develop intricate campaigns, create D&D 5e compliant player characters (as reusable blueprints and as campaign participants), and will in the future facilitate immersive text-based game sessions.
 
-This project is currently under development.
+This project is currently under development and is being built as a **Progressive Web Application (PWA)** with a strong focus on mobile-first usability and offline capabilities.
 
 ## Project Goal
 
 To provide a comprehensive, integrated tool for:
 
-* **World Design & Management:** Crafting reusable, detailed fantasy worlds.
-* **Campaign Creation & Management:** Developing specific adventure narratives within a chosen World.
-* **Character Creation & Management:**
-    * Creating reusable character blueprints/templates (worldless).
-    * Creating specific characters for participation in campaigns (can be based on templates).
-* **Adventure Direction:** (Future) Running live game sessions.
+*   **World Design & Management:** Crafting reusable, detailed fantasy worlds.
+*   **Campaign Creation & Management:** Developing specific adventure narratives within a chosen World.
+*   **Character Creation & Management:**
+    *   Creating reusable character blueprints/templates (worldless).
+    *   Creating specific characters for participation in campaigns (can be based on templates).
+*   **Adventure Direction:** (Future) Running live game sessions.
+
+## Current Development Focus (As of this session)
+
+*   **Global UI Layout & Styling Overhaul:**
+    *   Implemented a consistent three-region app layout in `App.js` and `App.css`:
+        *   `.appHeader`: Unpadded shell for the top navigation/context bar.
+        *   `.appBody`: Unpadded, non-scrolling shell that hosts page components.
+        *   `.appFooter`: Unpadded shell for the bottom action bar.
+    *   Created `PageHeader.js` (formerly `DynamicAppTopBar`) to render content within `.appHeader`, managing its own internal padding and max-width content block using theme variables.
+    *   Created `PageFooter.js` (based on `DynamicAppBottomBar` concept) to render context-sensitive actions within `.appFooter`, managing its own internal padding and max-width content block using theme variables.
+    *   Refactored `HomePage.js` and `PlayerCharacterListPage.js` (and their CSS modules) to:
+        *   Use a root class (e.g., `.pageContent`) that fills the `.appBody`.
+        *   Structure internal content with page-specific `.pageTitle` and `.pageBody` elements.
+        *   Apply padding and max-width constraints to these page-level elements using variables from `theme.css` for uniform content alignment.
+        *   Ensure specific elements within the page's `.pageBody` (like lists) handle their own scrolling.
+*   **Character Creation Wizard - Race Selection Step (`Step2_RaceSelection.js`):**
+    *   UI enhanced for side-by-side race/subrace dropdowns.
+    *   Displays racial traits and ASIs. (Further refinement for interactive choices pending).
+
+## Next Immediate Steps (To be continued with AI Assistance)
+
+1.  **Refactor `CharacterWizardContext.js`:**
+    *   Update the context to accurately provide all necessary state (`currentWizardStep`, `totalWizardSteps`, `isWizardSubmitting`, `wizardError`, `wizardSteps`, `visitedSteps`, `isWizardActive`) and callback functions (`onWizardBack`, `onWizardNext`, `onWizardNavStepClick`) required by the global `PageHeader.js` and `PageFooter.js`.
+2.  **Refactor `CharacterCreationWizard.js` and its CSS module:**
+    *   Remove its local rendering of titles (if distinct from step prompts) and footer navigation buttons. These will be handled by `PageHeader.js` (for step prompt/title display, using wizard context) and `PageFooter.js` (for buttons, using wizard context).
+    *   Ensure `CharacterCreationWizard.js` uses `useEffect` and `updateWizardSharedState` (from context) to continuously provide its internal state and handler functions to `CharacterWizardContext`.
+    *   Update `CharacterCreationWizard.module.css` to use the consistent page structure (root class filling `.appBody`, containing `.pageTitle` and `.pageBody` for the active step area), applying padding and max-width from `theme.css`. Specific elements *within* the active step component will handle their own scrolling.
+3.  **Finalize `Step2_RaceSelection.js` Enhancements (after wizard refactor):**
+    *   Implement UI and logic for handling **interactive racial choices** (e.g., selecting bonus languages, skills, or tools granted by racial traits).
+    *   Ensure ASIs selected/granted here are correctly passed back to and applied in the "Ability Scores" step.
+4.  **Reorder Character Creation Wizard Steps (after wizard refactor):**
+    *   Update `WIZARD_STEPS_CONFIG` in `CharacterCreationWizard.js` to the desired order: Identity -> Race -> Class -> Background -> Abilities.
+    *   Simplify `Step3_BackgroundAlignment.js` to only handle Background selection.
+5.  **PWA Local Data Storage (Phase 1 - Setup):**
+    *   Design and implement client-side data storage using IndexedDB via Dexie.js for all application data.
 
 ## Architecture
 
-* **Frontend (`frontend/app`):** React application, bootstrapped with Create React App.
-    * Handles user interface and interaction.
-    * Communicates with the backend via `axios`.
-    * Uses `react-router-dom` for navigation.
-    * Features a multi-step wizard for character creation (`CharacterCreationWizard.js`).
-    * Uses CSS Modules for component-specific styling (e.g., `HomePage.module.css`, `CharacterCreationWizard.module.css`, `PlayerCharacterListPage.module.css`, `Step1_Identity.module.css`) and global CSS files (`App.css`, `theme.css`) for theme variables and base styles.
-    * Utilizes reusable common components like `Button`, `PillTextInput`, and `PillDropdown`.
-* **Backend (`backend`):** Node.js with Express.js.
-    * Provides RESTful API endpoints.
-    * Manages database interactions with PostgreSQL using the `pg` library.
-    * Uses `dotenv` for environment variable management.
-* **Database (`00_database_setup`):** PostgreSQL.
-    * Schema includes tables for worlds, campaigns, character templates, campaign-specific player characters, NPCs, items, and D&D lookup data (abilities, races, classes, spells, etc.).
-    * Initial data populates lookup tables and provides examples.
+*   **Frontend (`frontend/app`):** React application (Create React App).
+    *   **PWA Focus:** Mobile-first, offline capabilities.
+    *   **Layout:** App-level unpadded shells (`.appHeader`, `.appBody`, `.appFooter`). Page components provide their own padded content structure (e.g., `.pageTitle`, `.pageBody`) within `.appBody`, constrained by `var(--page-content-max-width)`.
+    *   Key Components: `PageHeader.js` (app navigation), `PageFooter.js` (app actions), `CharacterWizardContext.js`.
+    *   Uses `axios`, `react-router-dom`.
+    *   Styling: CSS Modules, global `App.css` (for shells), `theme.css` (for variables).
+*   **Backend (`backend`):** Node.js with Express.js, `pg` library for PostgreSQL.
+*   **Database (`00_database_setup`):** PostgreSQL. Schema in `001_schema.sql`, data in `002_*.sql`.
 
-## Core Features & Structure
+## PWA & Offline Strategy
+
+*   **Goal:** All application data (D&D rules/lookups, user-created content) client-side.
+*   **Technology:** IndexedDB via Dexie.js.
+*   **Data Management:** Local replica, initial server sync for lookups, future sync for user data.
+
+## Core Features & Structure (Overview)
 
 ### 1. Database (`00_database_setup/`)
 
-* **`001_schema.sql`**: Defines the structure for:
-    * D&D 5e lookup tables (e.g., `dnd_abilities`, `dnd_races`, `dnd_classes`, `dnd_items`, `dnd_spells`).
-    * Core application tables:
-        * `worlds`: For foundational world settings.
-        * `campaigns`: For specific adventures linked to a world.
-        * `character_templates`: For reusable, worldless character blueprints. Includes related tables for proficiencies, spells, and inventory.
-        * `player_characters`: For characters specifically part of a campaign. Includes related tables for proficiencies, spells, and inventory.
-        * `npcs` (templates), `campaign_npc_instances`, `campaign_item_instances`.
-        * `live_sessions` (linked to campaigns).
-* **`002_initial_data.sql`**: Populates lookup tables with core D&D entities and some example data.
+*   `001_schema.sql`, `002_initial_data.sql`, `002_most_data.sql`.
 
 ### 2. Backend (`backend/server.js`)
 
-Provides API endpoints for:
-
-* Worlds (`/api/worlds`)
-* Campaigns (`/api/campaigns`)
-* Character Templates (`/api/character-templates`): For creating and listing general character blueprints.
-* Campaign-Specific Characters:
-    * `POST /api/campaigns/:campaignId/characters-from-template`: Creates a new character in a campaign by copying from an existing character template.
-* NPCs (`/api/npcs`) and Campaign NPC Instances (`/api/campaigns/:campaignId/npc-instances`).
-* D&D data lookups (e.g., `/api/dnd/races`, `/api/dnd/classes`, `/api/dnd/alignments`).
+*   RESTful APIs for worlds, campaigns, characters, D&D lookups.
 
 ### 3. Frontend (`frontend/app/src/`)
 
-* **`App.js`**:
-    * Sets up `react-router-dom` for navigation.
-    * Implements `AppLayout` which includes a `DynamicAppTopBar`.
-    * Uses `CharacterWizardProvider` to allow the main top bar to display wizard progression steps when the character creation wizard is active.
-* **Pages (`pages/`)**:
-    * `HomePage/HomePage.js`: Main entry point with initial welcome screen and main menu.
-    * `PlayerCharacterListPage/PlayerCharacterListPage.js`: Displays a list of character templates and links to create new characters.
-    * `CharacterCreationPage/CharacterCreationWizard.js`: A multi-step wizard for creating characters.
-        * Operates in "template" mode (saves to `/api/character-templates`) or "campaign" mode (saves as template, then copies to campaign).
-        * The first step is "IDENTITY" (`Step1_Identity.js`).
-        * The wizard title area in `CharacterCreationWizard.js` displays a descriptive prompt for the current step (e.g., "Define the core identity of your character.").
-    * Campaign management pages: `CampaignListPage.js`, `CreateCampaignPage.js`, `CampaignDetailPage.js`.
-* **Step Components (`components/characterCreation/steps/`)**:
-    * `Step1_Identity.js` (formerly `Step0_BasicInfo.js`): Handles Character Name, Level, and Alignment selection. Alignment description is shown below the dropdown and is scrollable if long, with no background or border.
-    * Other steps include Class, Race, Background, Abilities selection.
-* **Common Components (`components/common/`)**:
-    * `Button/Button.js`: Reusable button.
-    * `PillTextInput/PillTextInput.js`: Reusable styled text input.
-    * `PillDropdown/PillDropdown.js`: Reusable styled dropdown.
-* **Styling**:
-    * `theme.css`: Global CSS custom properties for theme variables (colors, fonts, radii, shadows, padding). `--page-padding-horizontal` is currently `35px`.
-    * `App.css`: Global application styles, main layout.
-    * `CharacterCreationWizard.module.css`: Styles for the wizard layout. `.wizardContent` has `max-width: 900px` and `overflow-y: auto` (though the current aim is for only specific child elements like the alignment description to scroll, not `.wizardContent` itself). `.errorMessageFixed` has `max-width: 350px`.
-    * `Step1_Identity.module.css`: Styles for the first step of character creation, including side-by-side layout for Name/Level. Form element containers within this step do not have their own `max-width`, allowing them to utilize space within `.wizardContent`, while the common input components themselves might have a `max-width`.
+*   **`App.js`**: Defines `.appHeader`, `.appBody`, `.appFooter`. Hosts `PageHeader.js`, `PageFooter.js`, and routes to page components. Uses `CharacterWizardProvider`.
+*   **Layout Components (`components/layout/`):**
+    *   `PageHeader.js`: Renders content for `.appHeader` (e.g., wizard steps). Manages its own internal content padding and max-width block.
+    *   `PageFooter.js`: Renders content for `.appFooter` (e.g., wizard navigation, list page actions). Manages its own internal content padding and max-width block.
+*   **Pages (`pages/`)**:
+    *   `HomePage/HomePage.js`
+    *   `PlayerCharacterListPage/PlayerCharacterListPage.js`
+    *   `CharacterCreationPage/CharacterCreationWizard.js`
+    *   (Page structure: root div like `.pageContent` fills `.appBody`, contains `.pageTitle` and `.pageBody` for main content, styled with theme variables for padding and max-width.)
+*   **Character Creation Wizard (`CharacterCreationWizard.js`)**: Multi-step process. To be refactored to integrate with global `PageHeader.js` and `PageFooter.js` via `CharacterWizardContext`.
+    *   `Step1_Identity.js`: Character Name, Level, Alignment.
+    *   `Step2_RaceSelection.js`: Race/Subrace selection, traits, ASIs.
+    *   `Step1_ClassSelection.js`: Class selection.
+    *   `Step3_BackgroundAlignment.js`: Background selection (alignment part to be removed).
+    *   `Step4_AbilityScores.js`: Ability Score input.
+*   **Common Components (`components/common/`)**: `Button`, `PillTextInput`, `PillDropdown`.
+*   **Styling**: `theme.css` (variables including padding and max-width), `App.css` (app shells), component-specific CSS Modules.
 
-## Current UI/UX Behaviors & Constraints:
+## Key UI/UX Behaviors & Constraints:
 
-* **Viewport & Scrolling:** The main application viewport (`.App`, `.wizardPageContainer`) is set to `overflow: hidden;`.
-* **Wizard Content Area (`.wizardContent`):** This area is intended to hold the content of each wizard step. While its CSS has `overflow-y: auto;`, the current design goal is that this specific container should *not* scroll; rather, specific child elements (like the alignment description box in `Step1_Identity.js`) should handle their own scrolling if their content is too long to fit within the height allocated by the overall step layout.
-* **Fixed Footer:** The character creation wizard has a fixed footer (`.pageFixedFooter`) for navigation buttons. Space is reserved for this footer by `padding-bottom` on `.wizardContent`.
-* **Dynamic Application Header:** The top bar (`.top-bar` in `App.css`, styled as `.navStep` within `CharacterCreationWizard.module.css` when wizard is active) displays wizard progression steps.
+*   **Global Layout:** Application uses a fixed header (`.appHeader`), a main content area (`.appBody`), and a fixed footer (`.appFooter`). These app-level shells are unpadded.
+*   **Page Layout:** Content within `PageHeader.js`, `PageFooter.js`, and individual page components (title, body) is constrained by `var(--page-content-max-width)` and centered, using specific padding variables from `theme.css` for consistent internal spacing.
+*   **Scrolling:** The `.appBody` itself does not scroll. Specific elements *within* a page's own `.pageBody` (e.g., lists, detail panes) are designated as scrollable (`overflow-y: auto`) if their content exceeds available space.
 
 ## Getting Started (Development Environment)
 
@@ -99,37 +109,31 @@ Provides API endpoints for:
 
 1.  **Clone the Repository.**
 2.  **Setup Database (`00_database_setup/`):**
-    * Ensure PostgreSQL is running.
-    * Create a database (e.g., `fates_forge_db`).
-    * Configure `backend/.env` using `backend/.env.example` as a template with your database credentials (user, host, database name, password, port) and desired `BACKEND_PORT` (e.g., `1001`).
-    * Run database scripts against your created database:
+    *   Ensure PostgreSQL is running.
+    *   Create a database (e.g., `fates_forge_db`).
+    *   Configure `backend/.env` using `backend/.env.example` as a template.
+    *   Run database scripts:
         ```bash
         psql -U your_db_user -d fates_forge_db -f 00_database_setup/001_schema.sql
         psql -U your_db_user -d fates_forge_db -f 00_database_setup/002_initial_data.sql
+        psql -U your_db_user -d fates_forge_db -f 00_database_setup/002_most_data.sql
         ```
 3.  **Backend Setup (`backend/`):**
     ```bash
     cd backend
     npm install
-    npm start 
+    npm start
     ```
-    (Typically runs on the `BACKEND_PORT` specified in `.env`, e.g., `http://localhost:1001`).
 4.  **Frontend Setup (`frontend/app/`):**
     ```bash
     cd frontend/app
     npm install
-    # Create a .env file (e.g., by copying .env.example if one exists) with:
-    # REACT_APP_API_BASE_URL=http://localhost:1001/api (ensure port matches backend)
-    # PORT=1000 (or your preferred frontend port)
+    # Create a .env file with REACT_APP_API_BASE_URL and PORT
     npm start
     ```
-    (Typically runs on the `PORT` specified in `.env`, e.g., `http://localhost:1000`).
 
-## Key Recent UI Decisions for Character Creation Step 1 ("Identity")
+## Key Recent UI Decisions for Character Creation
 
-* The step title displayed on the page is a descriptive phrase (e.g., "Define the core identity of your character.") rather than just the step name.
-* The "Player Name" field has been removed.
-* "Character Name" and "Level" inputs are styled as pills and arranged side-by-side, with the Level input being narrower.
-* The "Alignment" selection uses a stylized pill dropdown.
-* The description for the selected alignment is always displayed directly below the dropdown (no toggle button, no custom background/border for the description box itself).
-* The alignment description box is scrollable if its content is too long, and its height is managed to work on various phone sizes without being cut off by the fixed footer, and without causing the main `.wizardContent` area to scroll.
+*   **Identity Step (`Step1_Identity.js`):** Descriptive page prompt. "Player Name" field removed. Character Name/Level side-by-side. Alignment pill dropdown with description below (scrollable).
+*   **Race Step (`Step2_RaceSelection.js`):** Race and Subrace dropdowns placed side-by-side. Detailed display of selected race/subrace traits and ASIs. (Further refinement in progress).
+*   **Universal Styling:** `PillTextInput` and `PillDropdown` to be used consistently for inputs. Content blocks across the header, footer, and page content areas adhere to `var(--page-content-max-width)`.

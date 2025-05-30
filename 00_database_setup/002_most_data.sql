@@ -15,7 +15,7 @@ ON CONFLICT (name) DO UPDATE SET -- Using ON CONFLICT to handle re-runs graceful
 -- Base Dwarf (PHB p. 18) [cite: Comprehensive D&D 5e Data Compilation (24-29)]
 INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description) VALUES
 ('Dwarf', 25, 'Medium',
-  '{"CON": 2}', -- Base Dwarf ASI
+  '{"CON": 2}',
   '{
      "darkvision": {"name": "Darkvision", "description": "Accustomed to life underground, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can''t discern color in darkness, only shades of gray."},
      "dwarven_resilience": {"name": "Dwarven Resilience", "description": "You have advantage on saving throws against poison, and you have resistance against poison damage."},
@@ -34,11 +34,9 @@ INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, d
     speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description;
 
 -- Hill Dwarf Subrace (PHB p. 20) [cite: Comprehensive D&D 5e Data Compilation (30)]
--- Note on subrace features: Only features unique to the subrace are listed in racial_features.
--- Base dwarf traits are inherited. Application logic should merge parent and subrace features.
 INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description, parent_race_id) VALUES
 ('Hill Dwarf', 25, 'Medium',
-  '{"WIS": 1}', -- Subrace ASI, to be combined with parent's CON +2
+  '{"WIS": 1}',
   '{
      "dwarven_toughness": {"name": "Dwarven Toughness", "description": "Your hit point maximum increases by 1, and it increases by 1 every time you gain a level."}
    }',
@@ -50,7 +48,7 @@ INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, d
 -- Mountain Dwarf Subrace (PHB p. 20) [cite: Comprehensive D&D 5e Data Compilation (31)]
 INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description, parent_race_id) VALUES
 ('Mountain Dwarf', 25, 'Medium',
-  '{"STR": 2}', -- Subrace ASI, to be combined with parent's CON +2
+  '{"STR": 2}',
   '{
      "dwarven_armor_training": {"name": "Dwarven Armor Training", "description": "You have proficiency with light and medium armor."}
    }',
@@ -59,16 +57,15 @@ INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, d
 ) ON CONFLICT (name) DO UPDATE SET
     speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description, parent_race_id = EXCLUDED.parent_race_id;
 
-
 -- Base Elf (PHB p. 21) [cite: Comprehensive D&D 5e Data Compilation (32-38)]
 INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description) VALUES
 ('Elf', 30, 'Medium',
-  '{"DEX": 2}', -- Base Elf ASI
+  '{"DEX": 2}',
   '{
      "darkvision": {"name": "Darkvision", "description": "Accustomed to twilit forests and the night sky, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can''t discern color in darkness, only shades of gray."},
      "keen_senses": {"name": "Keen Senses", "description": "You have proficiency in the Perception skill."},
      "fey_ancestry": {"name": "Fey Ancestry", "description": "You have advantage on saving throws against being charmed, and magic can''t put you to sleep."},
-     "trance": {"name": "Trance", "description": "Elves don’t need to sleep. Instead, they meditate deeply, remaining semiconscious, for 4 hours a day. (The Common word for such meditation is “trance.”) While meditating, you can dream after a fashion; such dreams are actually mental exercises that have become reflexive through years of practice. After resting in this way, you gain the same benefit that a human does from 8 hours of sleep."},
+     "trance": {"name": "Trance", "description": "Elves don’t need to sleep. Instead, they meditate deeply, remaining semiconscious, for 4 hours a day. This grants the same benefit that a human does from 8 hours of sleep."},
      "languages": {"name": "Languages", "description": "You can speak, read, and write Common and Elvish."}
    }',
  'Elves are a magical people of otherworldly grace, living in the world but not entirely part of it.'
@@ -78,7 +75,7 @@ INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, d
 -- High Elf Subrace (PHB p. 23) [cite: Comprehensive D&D 5e Data Compilation (38-39)]
 INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description, parent_race_id) VALUES
 ('High Elf', 30, 'Medium',
-  '{"INT": 1}', -- Subrace ASI, to be combined with parent's DEX +2
+  '{"INT": 1}',
   '{
      "elf_weapon_training": {"name": "Elf Weapon Training", "description": "You have proficiency with the longsword, shortsword, shortbow, and longbow."},
      "cantrip": {
@@ -99,8 +96,8 @@ INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, d
 
 -- Wood Elf Subrace (PHB p. 24) [cite: Comprehensive D&D 5e Data Compilation (40-41)]
 INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description, parent_race_id) VALUES
-('Wood Elf', 35, 'Medium', -- Note: Wood Elf speed is 35, overriding base Elf
-  '{"WIS": 1}', -- Subrace ASI, to be combined with parent's DEX +2
+('Wood Elf', 35, 'Medium',
+  '{"WIS": 1}',
   '{
      "elf_weapon_training": {"name": "Elf Weapon Training", "description": "You have proficiency with the longsword, shortsword, shortbow, and longbow."},
      "fleet_of_foot": {"name": "Fleet of Foot", "description": "Your base walking speed increases to 35 feet."},
@@ -111,11 +108,63 @@ INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, d
 ) ON CONFLICT (name) DO UPDATE SET
     speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description, parent_race_id = EXCLUDED.parent_race_id;
 
+-- Dark Elf (Drow) Subrace (PHB p. 24) [cite: Comprehensive D&D 5e Data Compilation (41-43)]
+INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description, parent_race_id) VALUES
+('Dark Elf (Drow)', 30, 'Medium',
+  '{"CHA": 1}',
+  '{
+     "superior_darkvision": {"name": "Superior Darkvision", "description": "Your darkvision has a radius of 120 feet."},
+     "sunlight_sensitivity": {"name": "Sunlight Sensitivity", "description": "You have disadvantage on attack rolls and on Wisdom (Perception) checks that rely on sight when you, the target of your attack, or whatever you are trying to perceive is in direct sunlight."},
+     "drow_magic": {"name": "Drow Magic", "description": "You know the dancing lights cantrip. When you reach 3rd level, you can cast the faerie fire spell once using this trait and regain the ability to do so when you finish a long rest. When you reach 5th level, you can cast the darkness spell once using this trait and regain the ability to do so when you finish a long rest. Charisma is your spellcasting ability for these spells."},
+     "drow_weapon_training": {"name": "Drow Weapon Training", "description": "You have proficiency with rapiers, shortswords, and hand crossbows."}
+   }',
+ 'Descended from an earlier subrace of dark-skinned elves, the drow were banished from the surface world for following the goddess Lolth down the path to evil and corruption.',
+ (SELECT race_id from dnd_races WHERE name = 'Elf')
+) ON CONFLICT (name) DO UPDATE SET
+    speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description, parent_race_id = EXCLUDED.parent_race_id;
+
+-- Halfling (PHB p. 26) [cite: Comprehensive D&D 5e Data Compilation (44-47)]
+INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description) VALUES
+('Halfling', 25, 'Small',
+  '{"DEX": 2}',
+  '{
+     "lucky": {"name": "Lucky", "description": "When you roll a 1 on the d20 for an attack roll, ability check, or saving throw, you can reroll the die and must use the new roll."},
+     "brave": {"name": "Brave", "description": "You have advantage on saving throws against being frightened."},
+     "halfling_nimbleness": {"name": "Halfling Nimbleness", "description": "You can move through the space of any creature that is of a size larger than yours."},
+     "languages": {"name": "Languages", "description": "You can speak, read, and write Common and Halfling."}
+   }',
+ 'The diminutive halflings survive in a world full of larger creatures by avoiding notice or, barring that, avoiding offense.'
+) ON CONFLICT (name) DO UPDATE SET
+    speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description;
+
+-- Lightfoot Halfling Subrace (PHB p. 28) [cite: Comprehensive D&D 5e Data Compilation (47)]
+INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description, parent_race_id) VALUES
+('Lightfoot Halfling', 25, 'Small',
+  '{"CHA": 1}',
+  '{
+     "naturally_stealthy": {"name": "Naturally Stealthy", "description": "You can attempt to hide even when you are obscured only by a creature that is at least one size larger than you."}
+   }',
+ 'Lightfoot halflings can easily hide from notice, even using other people as cover. They are inclined to be affable and get along well with others.',
+ (SELECT race_id from dnd_races WHERE name = 'Halfling')
+) ON CONFLICT (name) DO UPDATE SET
+    speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description, parent_race_id = EXCLUDED.parent_race_id;
+
+-- Stout Halfling Subrace (PHB p. 28) [cite: Comprehensive D&D 5e Data Compilation (48-49)]
+INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description, parent_race_id) VALUES
+('Stout Halfling', 25, 'Small',
+  '{"CON": 1}',
+  '{
+     "stout_resilience": {"name": "Stout Resilience", "description": "You have advantage on saving throws against poison, and you have resistance against poison damage."}
+   }',
+ 'Stout halflings are hardier than average and have some resistance to poison. Some say that stouts have dwarven blood.',
+ (SELECT race_id from dnd_races WHERE name = 'Halfling')
+) ON CONFLICT (name) DO UPDATE SET
+    speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description, parent_race_id = EXCLUDED.parent_race_id;
 
 -- Human (Standard - PHB p. 29) [cite: Comprehensive D&D 5e Data Compilation (50-51)]
 INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description) VALUES
 ('Human', 30, 'Medium',
-  '{"STR": 1, "DEX": 1, "CON": 1, "INT": 1, "WIS": 1, "CHA": 1}', -- All +1
+  '{"STR": 1, "DEX": 1, "CON": 1, "INT": 1, "WIS": 1, "CHA": 1}',
   '{
      "languages": {"name": "Languages", "description": "You can speak, read, and write Common and one extra language of your choice.", "type": "choice_language", "count": 1}
    }',
@@ -126,7 +175,7 @@ INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, d
 -- Variant Human (Optional Rule - PHB p. 31) [cite: Comprehensive D&D 5e Data Compilation (51)]
 INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description, parent_race_id) VALUES
 ('Human (Variant)', 30, 'Medium',
-  '{"type": "choice_two_different", "value": 1}', -- Two different ability scores of your choice increase by 1.
+  '{"type": "choice_two_different", "value": 1}',
   '{
      "skills": {"name": "Skills", "description": "You gain proficiency in one skill of your choice.", "type": "choice_skill", "count": 1},
      "feat": {"name": "Feat", "description": "You gain one feat of your choice.", "type": "choice_feat", "count": 1},
@@ -137,8 +186,114 @@ INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, d
 ) ON CONFLICT (name) DO UPDATE SET
     speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description, parent_race_id = EXCLUDED.parent_race_id;
 
+-- Dragonborn (PHB p. 32) [cite: Comprehensive D&D 5e Data Compilation (52-56)]
+-- Note for Dragonborn Ancestry: The application will need a way to present the choice of dragon type
+-- and then store/apply the corresponding damage_type and breath_weapon_shape.
+-- The options_list_reference "dragonborn_ancestries" is a placeholder for this lookup.
+INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description) VALUES
+('Dragonborn', 30, 'Medium',
+  '{"STR": 2, "CHA": 1}',
+  '{
+     "draconic_ancestry": {
+        "name": "Draconic Ancestry",
+        "description": "You have draconic ancestry. Choose one type of dragon from the Draconic Ancestry table. Your breath weapon and damage resistance are determined by the dragon type, as shown in the table.",
+        "type": "choice_from_list",
+        "options_list_reference": "dragonborn_ancestries"
+     },
+     "breath_weapon": {"name": "Breath Weapon", "description": "You can use your action to exhale destructive energy. Its size, shape, and damage type are determined by your draconic ancestry. When you use your breath weapon, each creature in the area of the exhalation must make a saving throw, the type of which is determined by your draconic ancestry. The DC for this saving throw equals 8 + your Constitution modifier + your proficiency bonus. A creature takes 2d6 damage on a failed save, and half as much damage on a successful one. The damage increases to 3d6 at 6th level, 4d6 at 11th level, and 5d6 at 16th level. After you use your breath weapon, you can''t use it again until you complete a short or long rest."},
+     "damage_resistance": {"name": "Damage Resistance", "description": "You have resistance to the damage type associated with your draconic ancestry."},
+     "languages": {"name": "Languages", "description": "You can speak, read, and write Common and Draconic. Draconic is thought to be one of the oldest languages and is often used in the study of magic."}
+   }',
+ 'Born of dragons, as their name proclaims, dragonborn walk proudly through a world that greets them with fearful incomprehension.'
+) ON CONFLICT (name) DO UPDATE SET
+    speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description;
 
-SELECT 'dnd_races table populated with corrected examples.' AS status;
+-- Base Gnome (PHB p. 35) [cite: Comprehensive D&D 5e Data Compilation (57-60)]
+INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description) VALUES
+('Gnome', 25, 'Small',
+  '{"INT": 2}',
+  '{
+     "darkvision": {"name": "Darkvision", "description": "Accustomed to life underground, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can''t discern color in darkness, only shades of gray."},
+     "gnome_cunning": {"name": "Gnome Cunning", "description": "You have advantage on all Intelligence, Wisdom, and Charisma saving throws against magic."},
+     "languages": {"name": "Languages", "description": "You can speak, read, and write Common and Gnomish. The Gnomish language, which uses the Dwarvish script, is renowned for its technical treatises and its catalogs of knowledge about the natural world."}
+   }',
+ 'A gnome’s energy and enthusiasm for living shines through every inch of his or her tiny body.'
+) ON CONFLICT (name) DO UPDATE SET
+    speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description;
+
+-- Forest Gnome Subrace (PHB p. 37) [cite: Comprehensive D&D 5e Data Compilation (60-61)]
+INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description, parent_race_id) VALUES
+('Forest Gnome', 25, 'Small',
+  '{"DEX": 1}',
+  '{
+     "natural_illusionist": {"name": "Natural Illusionist", "description": "You know the minor illusion cantrip. Intelligence is your spellcasting ability for it."},
+     "speak_with_small_beasts": {"name": "Speak with Small Beasts", "description": "Through sounds and gestures, you can communicate simple ideas with Small or smaller beasts. Forest gnomes love animals and often keep squirrels, badgers, rabbits, moles, woodpeckers, and other creatures as beloved pets."}
+   }',
+ 'As a forest gnome, you have a natural knack for illusion and inherent quickness and stealth. In the worlds of D&D, forest gnomes are rare and secretive.',
+ (SELECT race_id from dnd_races WHERE name = 'Gnome')
+) ON CONFLICT (name) DO UPDATE SET
+    speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description, parent_race_id = EXCLUDED.parent_race_id;
+
+-- Rock Gnome Subrace (PHB p. 37) [cite: Comprehensive D&D 5e Data Compilation (59-60)]
+INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description, parent_race_id) VALUES
+('Rock Gnome', 25, 'Small',
+  '{"CON": 1}',
+  '{
+     "artificers_lore": {"name": "Artificer''s Lore", "description": "Whenever you make an Intelligence (History) check related to magic items, alchemical objects, or technological devices, you can add twice your proficiency bonus, instead of any proficiency bonus you normally apply."},
+     "tinker": {"name": "Tinker", "description": "You have proficiency with artisan''s tools (tinker''s tools). Using those tools, you can spend 1 hour and 10 gp worth of materials to construct a Tiny clockwork device (AC 5, 1 hp). The device ceases to function after 24 hours (unless you spend 1 hour repairing it) or when you use your action to dismantle it; you can reclaim the materials by doing so. You can have up to three such devices active at a time. When you create a device, choose one of the following options: Clockwork Toy, Fire Starter, or Music Box."}
+   }',
+ 'As a rock gnome, you have a natural inventiveness and hardiness. Most gnomes in D&D worlds are rock gnomes.',
+ (SELECT race_id from dnd_races WHERE name = 'Gnome')
+) ON CONFLICT (name) DO UPDATE SET
+    speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description, parent_race_id = EXCLUDED.parent_race_id;
+
+-- Half-Elf (PHB p. 38) [cite: Comprehensive D&D 5e Data Compilation (62-65)]
+-- Note for Half-Elf Skill Versatility variants: PHB p.39 mentions these.
+-- This could be handled by application logic or specific subrace-like entries if desired.
+INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description) VALUES
+('Half-Elf', 30, 'Medium',
+  '{"CHA": 2, "choice_two_other": 1}', 
+  '{
+     "darkvision": {"name": "Darkvision", "description": "Thanks to your elf blood, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can''t discern color in darkness, only shades of gray."},
+     "fey_ancestry": {"name": "Fey Ancestry", "description": "You have advantage on saving throws against being charmed, and magic can''t put you to sleep."},
+     "skill_versatility": {"name": "Skill Versatility", "description": "You gain proficiency in two skills of your choice."},
+     "languages": {"name": "Languages", "description": "You can speak, read, and write Common, Elvish, and one extra language of your choice."}
+   }',
+ 'Walking in two worlds but truly belonging to neither, half-elves combine what some say are the best qualities of their elf and human parents.'
+) ON CONFLICT (name) DO UPDATE SET
+    speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description;
+
+-- Half-Orc (PHB p. 40) [cite: Comprehensive D&D 5e Data Compilation (66-68)]
+INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description) VALUES
+('Half-Orc', 30, 'Medium',
+  '{"STR": 2, "CON": 1}',
+  '{
+     "darkvision": {"name": "Darkvision", "description": "Thanks to your orc blood, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can''t discern color in darkness, only shades of gray."},
+     "menacing": {"name": "Menacing", "description": "You gain proficiency in the Intimidation skill."},
+     "relentless_endurance": {"name": "Relentless Endurance", "description": "When you are reduced to 0 hit points but not killed outright, you can drop to 1 hit point instead. You can’t use this feature again until you finish a long rest."},
+     "savage_attacks": {"name": "Savage Attacks", "description": "When you score a critical hit with a melee weapon attack, you can roll one of the weapon’s damage dice one additional time and add it to the extra damage of the critical hit."},
+     "languages": {"name": "Languages", "description": "You can speak, read, and write Common and Orc. Orc is a harsh, grating language with hard consonants."}
+   }',
+ 'Half-orcs’ grayish pigmentation, sloping foreheads, jutting jaws, prominent teeth, and towering builds make their orcish heritage plain for all to see.'
+) ON CONFLICT (name) DO UPDATE SET
+    speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description;
+
+-- Tiefling (PHB p. 42 - Asmodeus Lineage is default) [cite: Comprehensive D&D 5e Data Compilation (69-71)]
+INSERT INTO dnd_races (name, speed, size_category, asi_bonus, racial_features, description) VALUES
+('Tiefling', 30, 'Medium',
+  '{"INT": 1, "CHA": 2}', 
+  '{
+     "darkvision": {"name": "Darkvision", "description": "Thanks to your infernal heritage, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can''t discern color in darkness, only shades of gray."},
+     "hellish_resistance": {"name": "Hellish Resistance", "description": "You have resistance to fire damage."},
+     "infernal_legacy": {"name": "Infernal Legacy", "description": "You know the thaumaturgy cantrip. When you reach 3rd level, you can cast the hellish rebuke spell as a 2nd-level spell once with this trait and regain the ability to do so when you finish a long rest. When you reach 5th level, you can cast the darkness spell once with this trait and regain the ability to do so when you finish a long rest. Charisma is your spellcasting ability for these spells."},
+     "languages": {"name": "Languages", "description": "You can speak, read, and write Common and Infernal."}
+   }',
+ 'To be greeted with stares and whispers, to suffer violence and insult on the street, to see mistrust and fear in every eye: this is the lot of the tiefling.'
+) ON CONFLICT (name) DO UPDATE SET
+    speed = EXCLUDED.speed, size_category = EXCLUDED.size_category, asi_bonus = EXCLUDED.asi_bonus, racial_features = EXCLUDED.racial_features, description = EXCLUDED.description;
+
+
+SELECT 'dnd_races table populated with expanded PHB examples (corrected).' AS status;
 
 -- Class
 -- Barbarian (PHB p. 46) [cite: Comprehensive D&D 5e Data Compilation (116-120)]

@@ -1,4 +1,3 @@
-// frontend/app/src/pages/HomePage/HomePage.js
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import styles from './HomePage.module.css';
@@ -16,11 +15,12 @@ function HomePage() {
   
   const handleStart = () => {
     setIsStarted(true);
+    window.location.hash = '#menu'; 
   };
 
   return (
-    <div className={`${styles.homePage} ${!isStarted ? styles.initialScreen : styles.mainMenuScreen}`}>
-      <header className={styles.homeHeader}>
+    <div className={`${styles.pageContent} ${!isStarted ? styles.initialScreen : styles.mainMenuScreen}`}>
+      <header className={styles.homePageHeader}>
         <h1>
           {!isStarted ? "Welcome to Fate's Forge!" : "Fate's Forge"}
         </h1>
@@ -33,7 +33,7 @@ function HomePage() {
 
       {!isStarted ? (
         <div className={styles.startContainer}>
-          <Button onClick={handleStart}> 
+          <Button onClick={handleStart} className={styles.menuButtonLayout}> 
             Enter the Forge
           </Button>
         </div>

@@ -1,4 +1,3 @@
-// frontend/app/src/pages/PlayerCharacterListPage/PlayerCharacterListPage.js
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './PlayerCharacterListPage.module.css';
@@ -100,13 +99,17 @@ function PlayerCharacterListPage() {
   }, []);
 
   if (loading) {
-    return <div className={styles.pageContainer}><p>Loading characters...</p></div>;
+    return (
+      <div className={styles.pageContent}>
+        <p>Loading characters...</p>
+      </div>
+    );
   }
-
+  
   return (
-    <div className={styles.pageContainer}>
-      <div className={styles.pageHeaderFixed}>
-        <h2 className={styles.title}>CREATE & MANAGE CHARACTERS</h2>
+    <div className={styles.pageContent}>
+      <div className={styles.pageHeaderSection}>
+        <h2 className={styles.pageTitle}>CREATE & MANAGE CHARACTERS</h2>
         <div className={styles.backButtonContainer}>
           <Button 
             onClick={() => navigate('/#menu')} 
@@ -120,11 +123,11 @@ function PlayerCharacterListPage() {
 
       {error && (
         <div className={styles.errorContainer}> 
-          <p className={`error-message ${styles.pageError}`}>{error}</p>
+          <p className={`${styles.pageErrorGlobal} error-message`}>{error}</p>
         </div>
       )}
 
-      <div className={styles.characterList}>
+      <div className={styles.pageBody}>
         {characterTemplates.map((char) => (
           <Link to={`/player-characters/${char.id}`} key={char.id} className={styles.characterCardLink}>
             <div className={styles.characterCard}>
@@ -145,15 +148,6 @@ function PlayerCharacterListPage() {
             </div>
           </Link>
         ))}
-      </div>
-
-      {/* Using renamed classes for the footer */}
-      <div className={styles.pageFixedFooter}> {/* Renamed from createButtonContainerFixed */}
-        <div className={styles.pageFixedFooter_innerContainer}> {/* Renamed from createButtonInnerContainer */}
-          <Button to="/create-player-character" className={styles.pageFixedFooter_primaryAction}> {/* Renamed from createButton */}
-            CREATE NEW CHARACTER
-          </Button>
-        </div>
       </div>
     </div>
   );

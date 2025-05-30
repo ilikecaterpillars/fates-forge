@@ -1,0 +1,51 @@
+/* frontend/app/src/components/layout/PageFooter.module.css */
+.contentBlock { /* This div is inside .appFooter, gets max-width and padding */
+  width: 100%;
+  max-width: var(--page-content-max-width); /* Using the same max-width for content alignment */
+  margin-left: auto;
+  margin-right: auto;
+  padding: var(--page-footer-padding-vertical) var(--page-footer-padding-horizontal);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  gap: 10px; 
+  min-height: 40px; /* Ensure some minimum height, adjust as needed */
+}
+
+.buttonGroup {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+}
+
+.actionPrimary {
+  flex-grow: 1;
+}
+/* No .actionSecondary style needed if it uses default Button styles */
+
+.footerTextarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-standard);
+  border: 1px solid var(--color-border-input);
+  background-color: var(--color-background-input-alt);
+  color: var(--color-text-default);
+  box-sizing: border-box;
+  min-height: 40px; 
+  resize: vertical;
+  font-family: var(--font-family-main);
+  font-size: 1em;
+}
+.footerTextarea::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.errorMessageInline {
+  color: var(--color-error);
+  font-size: 0.9em;
+  text-align: center;
+  width: 100%;
+  order: -1; 
+  margin-bottom: 5px; 
+}

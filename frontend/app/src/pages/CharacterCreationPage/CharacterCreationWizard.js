@@ -18,8 +18,8 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:100
 // UPDATED: Configuration for wizard steps with the desired pagePrompt
 const WIZARD_STEPS_CONFIG = [
   { name: 'IDENTITY', component: Step1_Identity, id: 'identity', pagePrompt: 'Define the core identity of your character.' },
-  { name: 'CLASS', component: Step1_ClassSelection, id: 'class', pagePrompt: 'Choose your character\'s class.' },
   { name: 'RACE', component: Step2_RaceSelection, id: 'race', pagePrompt: 'Select your character\'s race.' },
+  { name: 'CLASS', component: Step1_ClassSelection, id: 'class', pagePrompt: 'Choose your character\'s class.' },
   { name: 'BACKGROUND', component: Step3_BackgroundAlignment, id: 'background', pagePrompt: 'Determine your character\'s background.' },
   { name: 'ABILITIES', component: Step4_AbilityScores, id: 'abilities', pagePrompt: 'Set your character\'s ability scores.' },
 ];
