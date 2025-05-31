@@ -8,8 +8,8 @@ import {
     useParams,     // Potentially used by PageFooter
     useNavigate    // Potentially used by PageFooter
 } from 'react-router-dom';
-import './App.css'; // Main app structural styles
-import './theme.css'; // Your theme variables
+import './App.scss'; // Main app structural styles
+import './theme.scss'; // Your theme variables
 
 // Context
 import { CharacterWizardProvider, useCharacterWizard } from './contexts/CharacterWizardContext'; 

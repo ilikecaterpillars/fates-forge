@@ -1,7 +1,7 @@
 // frontend/app/src/components/common/Button/Button.js
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from './Button.module.css';
+import styles from './Button.module.scss';
 
 const Button = ({
   children,

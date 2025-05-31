@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useCharacterWizard } from '../../contexts/CharacterWizardContext';
 import Button from '../common/Button/Button';
-import styles from './PageFooter.module.css';
+import styles from './PageFooter.module.scss';
 import { isWizardRoute } from '../../utils/routeUtils';
 
 function PageFooter() {

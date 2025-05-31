@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PillTextInput from '../../common/PillTextInput/PillTextInput'; // Import new component
 import PillDropdown from '../../common/PillDropdown/PillDropdown'; // Import new component
-import compStyles from './Step1_Identity.module.css'; 
+import compStyles from './Step1_Identity.module.scss'; 
 
 function Step1_Identity({ characterData, updateCharacterData, API_BASE_URL, setParentError }) {
   const [alignments, setAlignments] = useState([]);

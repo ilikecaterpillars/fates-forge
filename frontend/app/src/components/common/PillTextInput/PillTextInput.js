@@ -1,6 +1,6 @@
 // frontend/app/src/components/common/PillTextInput/PillTextInput.js
 import React from 'react';
-import styles from './PillTextInput.module.css';
+import styles from './PillTextInput.module.scss';
 
 const PillTextInput = ({
   id,

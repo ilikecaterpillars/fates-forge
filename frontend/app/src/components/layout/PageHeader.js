@@ -1,8 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useCharacterWizard } from '../../contexts/CharacterWizardContext';
-import styles from './PageHeader.module.css'; 
-import { isWizardRoute } from '../../utils/routeUtils';
+import styles from './PageHeader.module.scss'; 
+import { isWizardRoute } from '../../utils/routeUtils'; // Assuming you move isWizardRoute here
 
 function PageHeader() {
   const wizardContext = useCharacterWizard();
@@ -11,7 +11,7 @@ function PageHeader() {
   const shouldDisplayWizardNav = wizardContext && wizardContext.isWizardActive && isWizardRoute(location.pathname);
 
   return (
-    <div className={styles.contentBlock}>
+    <div className={styles.pageHeaderContent}>
       {shouldDisplayWizardNav && wizardContext.wizardSteps && wizardContext.wizardSteps.length > 0 ? (
         wizardContext.wizardSteps.map((step, index) => (
           <div

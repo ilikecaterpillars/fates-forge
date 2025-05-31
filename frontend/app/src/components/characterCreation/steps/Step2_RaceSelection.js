@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import PillDropdown from '../../common/PillDropdown/PillDropdown';
-import styles from './Step2_RaceSelection.module.css';
+import styles from './Step2_RaceSelection.module.scss';
 
 function Step2_RaceSelection({ characterData, updateCharacterData, API_BASE_URL, setParentError }) {
   const [allRaces, setAllRaces] = useState([]);

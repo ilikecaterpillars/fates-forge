@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import styles from './PlayerCharacterListPage.module.css';
+import styles from './PlayerCharacterListPage.module.scss';
 import Button from '../../components/common/Button/Button';
 
 const mockCharacterTemplates = [

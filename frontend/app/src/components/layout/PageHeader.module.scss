@@ -1,19 +1,14 @@
-/* frontend/app/src/components/layout/PageHeader.module.css */
-.contentBlock { /* This div is inside .appHeader, gets max-width and padding */
-  width: 100%;
-  max-width: var(--page-content-max-width); /* Using the same max-width for content alignment */
-  margin-left: auto;
-  margin-right: auto;
-  padding: var(--page-header-padding-vertical) var(--page-header-padding-horizontal);
-  box-sizing: border-box;
+.pageHeaderContent {
+  padding: var(--page-header-content-padding-vertical) var(--page-header-content-padding-horizontal);
   display: flex;
   align-items: center;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  min-height: 30px; /* Ensure some minimum height even if empty, adjust as needed */
+  height: 100%; /* Ensure it fills the .appHeader if .appHeader has a specific height from content */
+  box-sizing: border-box;
 }
-.contentBlock::-webkit-scrollbar { 
+.pageHeaderContent::-webkit-scrollbar { 
   display: none; 
 }
 

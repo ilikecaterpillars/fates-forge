@@ -1,8 +1,8 @@
 // frontend/app/src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './theme.css';
-import './index.css';
+import './theme.scss';
+import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

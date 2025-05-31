@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCharacterWizard } from '../../contexts/CharacterWizardContext';
-import styles from './CharacterCreationWizard.module.css';
+import styles from './CharacterCreationWizard.module.scss';
 import Button from '../../components/common/Button/Button';
 
 // Import step components

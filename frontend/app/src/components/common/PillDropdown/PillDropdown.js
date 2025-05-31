@@ -1,6 +1,6 @@
 // frontend/app/src/components/common/PillDropdown/PillDropdown.js
 import React from 'react';
-import styles from './PillDropdown.module.css';
+import styles from './PillDropdown.module.scss';
 
 const PillDropdown = ({
   id,

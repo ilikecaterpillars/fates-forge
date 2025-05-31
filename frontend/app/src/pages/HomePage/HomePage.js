@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import styles from './HomePage.module.css';
+import styles from './HomePage.module.scss';
 import Button from '../../components/common/Button/Button';
 
 function HomePage() {
